@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dish;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,7 +13,13 @@ class DishController extends Controller
     public function index()
     {
         $dishes = Dish::orderBy('sort_order')->get();
-        return view('admin.dishes.index', compact('dishes'));
+        $buttonSettings = [
+            'google_play_url' => SiteSetting::getValue('dishes_section_google_play_url', null),
+            'app_store_url' => SiteSetting::getValue('dishes_section_app_store_url', null),
+            'show_google_play' => (bool) SiteSetting::getValue('dishes_section_show_google_play', '1'),
+            'show_app_store' => (bool) SiteSetting::getValue('dishes_section_show_app_store', '1'),
+        ];
+        return view('admin.dishes.index', compact('dishes', 'buttonSettings'));
     }
 
     public function create()
@@ -71,6 +78,23 @@ class DishController extends Controller
         $dish->delete();
 
         return redirect()->route('admin.dishes.index')->with('success', 'Dish deleted successfully!');
+    }
+
+    public function updateButtonUrls(Request $request)
+    {
+        $validated = $request->validate([
+            'google_play_url' => 'nullable|url|max:255',
+            'app_store_url' => 'nullable|url|max:255',
+            'show_google_play' => 'boolean',
+            'show_app_store' => 'boolean',
+        ]);
+
+        SiteSetting::setValue('dishes_section_google_play_url', $validated['google_play_url'], 'url', 'Google Play Store URL for the Dishes section buttons.');
+        SiteSetting::setValue('dishes_section_app_store_url', $validated['app_store_url'], 'url', 'App Store URL for the Dishes section buttons.');
+        SiteSetting::setValue('dishes_section_show_google_play', $request->has('show_google_play') ? '1' : '0', 'boolean', 'Show/hide Google Play Store button in Dishes section.');
+        SiteSetting::setValue('dishes_section_show_app_store', $request->has('show_app_store') ? '1' : '0', 'boolean', 'Show/hide App Store button in Dishes section.');
+
+        return redirect()->route('admin.dishes.index')->with('success', 'Button settings updated successfully!');
     }
 }
 

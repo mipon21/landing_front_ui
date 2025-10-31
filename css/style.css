@@ -773,6 +773,24 @@ header.fixed .navbar {
 .banner_section .app_btn {
     display: flex;
     align-items: center;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    list-style: none;
+}
+
+.banner_section .app_btn li {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+.banner_section .app_btn li:first-child {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+.banner_section .app_btn li:only-child {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
 }
 
 /* hero slider list */
@@ -799,13 +817,126 @@ header.fixed .navbar {
     transition: .4s all;
 }
 
-.banner_section .app_btn li:last-child {
-    margin-left: 25px;
+.banner_section .app_btn li:not(:first-child) {
+    margin-left: 25px !important;
+}
+
+/* Ensure single button aligns perfectly with content above */
+.banner_section .app_btn li:only-child {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Override any potential flex spacing for single button */
+.banner_section .app_btn:has(li:only-child) {
+    justify-content: flex-start !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+/* Alternative for browsers that don't support :has() */
+.banner_section .app_btn li:first-child:last-child {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
 }
 
 .banner_section .app_btn li a img {
     transition: .4s all;
     height: 36px;
+}
+
+/* Hero Search Section Styles */
+.hero_search_section {
+    margin: 30px 0;
+}
+
+.hero_search_form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.search_input_wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 250px;
+}
+
+.hero_search_form .hero_location_input {
+    padding-right: 130px;
+    border-radius: 8px;
+    height: 50px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    width: 100%;
+}
+
+.locate_me_btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #ff6b35;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.locate_me_btn:hover {
+    color: #e55a2b;
+}
+
+.locate_me_btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.find_food_btn {
+    background-color: #ff6b35;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    height: 50px;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.find_food_btn:hover {
+    background-color: #e55a2b;
+    color: white;
+}
+
+/* Mobile responsive styles for search section */
+@media (max-width: 768px) {
+    .hero_search_form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search_input_wrapper {
+        width: 100%;
+        margin-bottom: 0;
+        min-width: auto;
+    }
+    
+    .find_food_btn {
+        width: 100%;
+        margin-top: 10px;
+    }
 }
 
 /* hero slider users */
@@ -1412,7 +1543,7 @@ iframe#youtubevideo {
     transition: .4s all;
 }
 
-.ctr_app_btn_block .app_btn li:last-child {
+.ctr_app_btn_block .app_btn li:last-child:not(:only-child) {
     margin-left: 25px;
 }
 
@@ -2948,7 +3079,7 @@ footer .bottom_footer .developer_text a {
     filter: invert(100%);
 }
 
-.download_app_new .app_btn li:last-child {
+.download_app_new .app_btn li:last-child:not(:only-child) {
     margin-left: 15px;
 }
 
@@ -3896,3 +4027,86 @@ footer .bottom_footer .developer_text a {
 .signup_section .form_block .side_screen .scrren img {
     max-width: 100%;
 }
+
+/* ==============Content Page (Privacy Policy, Terms & Conditions) Css Start==================== */
+
+.content_page_section {
+    position: relative;
+}
+
+.content_page_section .content_wrapper {
+    background-color: var(--white);
+    border: solid 1px var(--border);
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0px 8px 30px var(--shadow);
+}
+
+.content_page_section .content_text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--body-text);
+}
+
+.content_page_section .content_text p {
+    margin-bottom: 20px;
+}
+
+.content_page_section .content_text h1,
+.content_page_section .content_text h2,
+.content_page_section .content_text h3,
+.content_page_section .content_text h4,
+.content_page_section .content_text h5,
+.content_page_section .content_text h6 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: var(--black);
+}
+
+.content_page_section .content_text h1 {
+    font-size: 40px;
+}
+
+.content_page_section .content_text h2 {
+    font-size: 32px;
+}
+
+.content_page_section .content_text h3 {
+    font-size: 26px;
+}
+
+.content_page_section .content_text h4 {
+    font-size: 22px;
+}
+
+.content_page_section .content_text ul,
+.content_page_section .content_text ol {
+    margin-bottom: 20px;
+    padding-left: 30px;
+}
+
+.content_page_section .content_text ul li,
+.content_page_section .content_text ol li {
+    margin-bottom: 10px;
+}
+
+.content_page_section .content_text a {
+    color: var(--primery);
+    text-decoration: underline;
+}
+
+.content_page_section .content_text a:hover {
+    color: var(--black);
+}
+
+.content_page_section .content_text strong,
+.content_page_section .content_text b {
+    font-weight: 700;
+}
+
+.content_page_section .content_text em,
+.content_page_section .content_text i {
+    font-style: italic;
+}
+
+/* ==============Content Page Css End==================== */

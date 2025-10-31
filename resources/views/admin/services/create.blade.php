@@ -20,6 +20,7 @@
                         <select class="form-control" name="type" required>
                             <option value="restaurant" {{ old('type') === 'restaurant' ? 'selected' : '' }}>Restaurant</option>
                             <option value="customer" {{ old('type') === 'customer' ? 'selected' : '' }}>Customer</option>
+                            <option value="deliveryman" {{ old('type') === 'deliveryman' ? 'selected' : '' }}>Deliveryman</option>
                         </select>
                     </div>
 

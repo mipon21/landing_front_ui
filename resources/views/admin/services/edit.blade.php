@@ -8,7 +8,7 @@
     <a href="{{ route('admin.services.index') }}" class="btn btn-secondary">Back</a>
 </div>
 
-<form action="{{ route('admin.services.update', $service) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -21,6 +21,7 @@
                         <select class="form-control" name="type" required>
                             <option value="restaurant" {{ old('type', $service->type) === 'restaurant' ? 'selected' : '' }}>Restaurant</option>
                             <option value="customer" {{ old('type', $service->type) === 'customer' ? 'selected' : '' }}>Customer</option>
+                            <option value="deliveryman" {{ old('type', $service->type) === 'deliveryman' ? 'selected' : '' }}>Deliveryman</option>
                         </select>
                     </div>
 

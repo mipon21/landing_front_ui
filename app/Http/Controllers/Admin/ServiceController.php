@@ -23,7 +23,7 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'type' => 'required|in:restaurant,customer',
+            'type' => 'required|in:restaurant,customer,deliveryman',
             'badge_text' => 'nullable|string|max:255',
             'heading' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -45,6 +45,12 @@ class ServiceController extends Controller
             }
         }
         $validated['features'] = $features;
+        
+        // Ensure is_active is set correctly
+        // Since the form checkbox defaults to checked, if not in request, default to true
+        if (!isset($validated['is_active'])) {
+            $validated['is_active'] = true; // Default to active for new services
+        }
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('services', 'public');
@@ -55,15 +61,18 @@ class ServiceController extends Controller
         return redirect()->route('admin.services.index')->with('success', 'Service created successfully!');
     }
 
-    public function edit(Service $service)
+    public function edit($id)
     {
+        $service = Service::findOrFail($id);
         return view('admin.services.edit', compact('service'));
     }
 
-    public function update(Request $request, Service $service)
+    public function update(Request $request, $id)
     {
+        $service = Service::findOrFail($id);
+        
         $validated = $request->validate([
-            'type' => 'required|in:restaurant,customer',
+            'type' => 'required|in:restaurant,customer,deliveryman',
             'badge_text' => 'nullable|string|max:255',
             'heading' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -85,6 +94,11 @@ class ServiceController extends Controller
             }
         }
         $validated['features'] = $features;
+        
+        // Ensure is_active is set correctly (preserve existing value if checkbox not in request)
+        if ($request->has('is_active')) {
+            $validated['is_active'] = (bool) $request->is_active;
+        }
 
         if ($request->hasFile('image')) {
             if ($service->image) {
@@ -98,8 +112,9 @@ class ServiceController extends Controller
         return redirect()->route('admin.services.index')->with('success', 'Service updated successfully!');
     }
 
-    public function destroy(Service $service)
+    public function destroy($id)
     {
+        $service = Service::findOrFail($id);
         if ($service->image) {
             Storage::disk('public')->delete($service->image);
         }

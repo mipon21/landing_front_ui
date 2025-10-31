@@ -5,8 +5,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Order your favorite meals with ease using our Food Delivery mobile app. Browse local restaurants, customize your order, and enjoy fast, reliable delivery straight to your door. Download now for convenient, delicious dining at your fingertips.">
-    <title>Food Delivery Mobile App Landing Page HTML Template</title>
+    <meta name="description" content="<?php echo e($siteDescription); ?>">
+    <title><?php echo e($siteName); ?></title>
+    
+    <?php if($siteFavicon): ?>
+        <?php
+            // Ensure the path doesn't have duplicate storage/ prefix
+            $faviconPath = str_replace('storage/', '', $siteFavicon);
+            $faviconUrl = asset('storage/' . $faviconPath);
+            
+            // Use file modification time for cache busting
+            $faviconFile = storage_path('app/public/' . $faviconPath);
+            $faviconTimestamp = file_exists($faviconFile) ? filemtime($faviconFile) : time();
+            
+            // Determine MIME type based on file extension
+            $extension = strtolower(pathinfo($faviconPath, PATHINFO_EXTENSION));
+            $mimeTypes = [
+                'ico' => 'image/x-icon',
+                'png' => 'image/png',
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'gif' => 'image/gif',
+            ];
+            $mimeType = $mimeTypes[$extension] ?? 'image/x-icon';
+        ?>
+        <link rel="icon" type="<?php echo e($mimeType); ?>" href="<?php echo e($faviconUrl); ?>?v=<?php echo e($faviconTimestamp); ?>">
+        <link rel="shortcut icon" type="<?php echo e($mimeType); ?>" href="<?php echo e($faviconUrl); ?>?v=<?php echo e($faviconTimestamp); ?>">
+        <link rel="apple-touch-icon" href="<?php echo e($faviconUrl); ?>?v=<?php echo e($faviconTimestamp); ?>">
+    <?php else: ?>
+        <link rel="shortcut icon" href="<?php echo e(asset('images/favicon.webp')); ?>" type="image/x-icon">
+        <link rel="icon" type="image/webp" href="<?php echo e(asset('images/favicon.webp')); ?>">
+    <?php endif; ?>
 
     <!-- icofont-css-link -->
     <link rel="stylesheet" href="<?php echo e(asset('css/icofont.min.css')); ?>">
@@ -20,8 +49,6 @@
     <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
     <!-- Responsive-Style-link -->
     <link rel="stylesheet" href="<?php echo e(asset('css/responsive.css')); ?>">
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="<?php echo e(asset('images/favicon.webp')); ?>" type="image/x-icon">
     <!-- font 1 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,46 +65,7 @@
         <div id="loader"></div>
     </div>
 
-    <!-- Header Start -->
-    <header>
-        <div class="container">
-            <nav class="navbar navbar-expand-lg">
-                <a class="navbar-brand" href="<?php echo e(route('home')); ?>">
-                    <img src="<?php echo e(asset('images/logo.webp')); ?>" alt="Logo">
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon">
-                        <span class="toggle-wrap">
-                            <span class="toggle-bar"></span>
-                        </span>
-                    </span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item has_dropdown">
-                            <a class="nav-link" href="<?php echo e(route('home')); ?>">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="about.html">About us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="reviews.html">Reviews</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Contact</a>
-                        </li>
-                        <li class="nav-item">
-                            <div class="btn_block">
-                                <a class="nav-link dark_btn" href="contact.html">7 Days Free Trial</a>
-                                <div class="btn_bottom"></div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php echo $__env->make('partials.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <!-- Banner-Section-Start -->
     <section class="banner_section" id="home_sec">
@@ -160,8 +148,120 @@
                         </p>
                     </div>
 
+                    <!-- Search Section -->
+                    <?php if($hero && ($hero->show_search_section ?? false)): ?>
+                    <div class="hero_search_section">
+                        <form action="<?php echo e($hero->search_section_button_url ?? '#'); ?>" method="GET" class="hero_search_form">
+                            <div class="search_input_wrapper">
+                                <input 
+                                    type="text" 
+                                    name="location" 
+                                    id="hero_location_input"
+                                    class="form-control hero_location_input" 
+                                    placeholder="<?php echo e($hero->search_section_placeholder ?? 'Enter your location'); ?>"
+                                >
+                                <button 
+                                    type="button" 
+                                    class="locate_me_btn" 
+                                    onclick="getUserLocation()"
+                                >
+                                    <i class="icofont-location-pin"></i>
+                                    <span class="locate_me_text"><?php echo e($hero->search_section_locate_button_text ?? 'Locate me'); ?></span>
+                                </button>
+                            </div>
+                            <button 
+                                type="submit" 
+                                class="btn find_food_btn"
+                            >
+                                <?php echo e($hero->search_section_button_text ?? 'Find Food'); ?>
+
+                            </button>
+                        </form>
+                        <script>
+                            function getUserLocation() {
+                                const locationInput = document.getElementById('hero_location_input');
+                                const locateBtn = document.querySelector('.locate_me_btn');
+                                const locateText = document.querySelector('.locate_me_text');
+                                
+                                // Show loading state
+                                const originalText = locateText.textContent;
+                                locateText.textContent = 'Locating...';
+                                locateBtn.style.pointerEvents = 'none';
+                                locateBtn.style.opacity = '0.7';
+                                
+                                if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(
+                                        function(position) {
+                                            const lat = position.coords.latitude;
+                                            const lng = position.coords.longitude;
+                                            
+                                            // Use reverse geocoding to get address
+                                            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    let locationText = '';
+                                                    if (data && data.address) {
+                                                        // Try to build a readable address
+                                                        const addr = data.address;
+                                                        if (addr.road || addr.street) {
+                                                            locationText = (addr.road || addr.street) + 
+                                                                (addr.house_number ? ' ' + addr.house_number : '') +
+                                                                (addr.city || addr.town || addr.village ? ', ' + (addr.city || addr.town || addr.village) : '') +
+                                                                (addr.state ? ', ' + addr.state : '') +
+                                                                (addr.country ? ', ' + addr.country : '');
+                                                        } else if (addr.city || addr.town || addr.village) {
+                                                            locationText = (addr.city || addr.town || addr.village) +
+                                                                (addr.state ? ', ' + addr.state : '') +
+                                                                (addr.country ? ', ' + addr.country : '');
+                                                        } else {
+                                                            locationText = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                                                        }
+                                                    } else {
+                                                        locationText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                                                    }
+                                                    
+                                                    // Display location in input field
+                                                    locationInput.value = locationText;
+                                                    
+                                                    // Reset button state
+                                                    locateText.textContent = originalText;
+                                                    locateBtn.style.pointerEvents = 'auto';
+                                                    locateBtn.style.opacity = '1';
+                                                })
+                                                .catch(error => {
+                                                    // Fallback to coordinates if geocoding fails
+                                                    locationInput.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                                                    
+                                                    // Reset button state
+                                                    locateText.textContent = originalText;
+                                                    locateBtn.style.pointerEvents = 'auto';
+                                                    locateBtn.style.opacity = '1';
+                                                });
+                                        },
+                                        function(error) {
+                                            // Reset button state
+                                            locateText.textContent = originalText;
+                                            locateBtn.style.pointerEvents = 'auto';
+                                            locateBtn.style.opacity = '1';
+                                            
+                                            // Show error message
+                                            alert('Unable to get your location. Please enter manually.');
+                                        }
+                                    );
+                                } else {
+                                    alert('Geolocation is not supported by this browser.');
+                                    locateText.textContent = originalText;
+                                    locateBtn.style.pointerEvents = 'auto';
+                                    locateBtn.style.opacity = '1';
+                                }
+                            }
+                        </script>
+                    </div>
+                    <?php endif; ?>
+
                     <!-- app buttons -->
                     <ul class="app_btn">
+                        <?php if($hero && ($hero->show_google_play ?? true)): ?>
                         <li>
                             <a href="<?php echo e($hero && $hero->google_play_url ? $hero->google_play_url : '#'); ?>">
                                 <?php if($hero && $hero->google_play_image): ?>
@@ -171,6 +271,8 @@
                                 <?php endif; ?>
                             </a>
                         </li>
+                        <?php endif; ?>
+                        <?php if($hero && ($hero->show_app_store ?? true)): ?>
                         <li>
                             <a href="<?php echo e($hero && $hero->app_store_url ? $hero->app_store_url : '#'); ?>">
                                 <?php if($hero && $hero->app_store_image): ?>
@@ -180,6 +282,7 @@
                                 <?php endif; ?>
                             </a>
                         </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
 
@@ -254,7 +357,7 @@
         <section class="row_am trusted_section">
             <div class="container">
                 <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                    <h4>Trusted by 2.5k+ restaurant</h4>
+                    <h4>Trusted by Top Restaurant</h4>
                 </div>
 
                 <div class="company_logos">
@@ -280,7 +383,7 @@
 
                 <div class="ctr_cta">
                     <div class="btn_block">
-                        <a href="blog-detail.html" class="btn puprple_btn ml-0">Register Your Restaurant</a>
+                        <a href="<?php echo e($restaurantRegisterButton['url']); ?>" class="btn puprple_btn ml-0"><?php echo e($restaurantRegisterButton['text']); ?></a>
                     </div>
                 </div>
             </div>
@@ -293,27 +396,13 @@
                     <div class="row">
                         <!-- section title -->
                         <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                            <?php if($whyChooseUs && count($whyChooseUs) > 0 && $whyChooseUs[0]->badge_text): ?>
-                                <span class="title_badge"><?php echo e($whyChooseUs[0]->badge_text); ?></span>
+                            <?php if($whyChooseUsSettings['badge_text']): ?>
+                                <span class="title_badge"><?php echo e($whyChooseUsSettings['badge_text']); ?></span>
                             <?php else: ?>
                                 <span class="title_badge">why use Appiq</span>
                             <?php endif; ?>
-                            <h2>
-                                <?php if($whyChooseUs && count($whyChooseUs) > 0 && $whyChooseUs[0]->heading): ?>
-                                    <?php echo e($whyChooseUs[0]->heading); ?>
-
-                                <?php else: ?>
-                                    Why choose us
-                                <?php endif; ?>
-                            </h2>
-                            <p>
-                                <?php if($whyChooseUs && count($whyChooseUs) > 0 && $whyChooseUs[0]->description): ?>
-                                    <?php echo e($whyChooseUs[0]->description); ?>
-
-                                <?php else: ?>
-                                    Lorem Ipsum is simply dummy text of the printing and typese tting indus orem Ipsum has beenthe standard dummy.
-                                <?php endif; ?>
-                            </p>
+                            <h2><?php echo e($whyChooseUsSettings['heading']); ?></h2>
+                            <p><?php echo e($whyChooseUsSettings['description']); ?></p>
                         </div>
 
                         <div class="dtat_box">
@@ -362,8 +451,8 @@
 
                             <div class="col-lg-6 col-md-12">
                                 <div class="why_us_new_img" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                                    <?php if($whyChooseUs && count($whyChooseUs) > 0 && $whyChooseUs[0]->feature_image): ?>
-                                        <img src="<?php echo e(asset('storage/' . $whyChooseUs[0]->feature_image)); ?>" alt="image">
+                                    <?php if($whyChooseUsFeatureImage): ?>
+                                        <img src="<?php echo e(asset('storage/' . $whyChooseUsFeatureImage)); ?>" alt="image">
                                     <?php else: ?>
                                         <img src="<?php echo e(asset('images/features_frame.webp')); ?>" alt="image">
                                     <?php endif; ?>
@@ -410,16 +499,20 @@
             <div class="ctr_app_btn_block">
                 <p><strong>Free food delivery for first 5 orders!</strong></p>
                 <ul class="app_btn">
+                    <?php if($dishesSectionButtons['show_google_play']): ?>
                     <li>
-                        <a href="<?php echo e($hero && $hero->google_play_url ? $hero->google_play_url : '#'); ?>">
+                        <a href="<?php echo e($dishesSectionButtons['google_play_url'] ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#')); ?>">
                             <img class="blue_img" src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image">
                         </a>
                     </li>
+                    <?php endif; ?>
+                    <?php if($dishesSectionButtons['show_app_store']): ?>
                     <li>
-                        <a href="<?php echo e($hero && $hero->app_store_url ? $hero->app_store_url : '#'); ?>">
+                        <a href="<?php echo e($dishesSectionButtons['app_store_url'] ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#')); ?>">
                             <img class="blue_img" src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image">
                         </a>
                     </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </section>
@@ -436,6 +529,7 @@
                 <?php
                     $restaurantService = $services->where('type', 'restaurant')->first();
                     $customerService = $services->where('type', 'customer')->first();
+                    $deliverymanService = $services->where('type', 'deliveryman')->first();
                 ?>
 
                 <div class="row service_blocks flex-row-reverse">
@@ -573,6 +667,57 @@
                         </div>
                     </div>
                 </div>
+
+                <?php if($deliverymanService): ?>
+                <div class="row service_blocks flex-row-reverse no_bottom_padding">
+                    <div class="col-md-6">
+                        <div class="service_text right_side" data-aos="fade-up" data-aos-duration="1500">
+                            <?php if($deliverymanService->badge_text): ?>
+                                <span class="title_badge"><?php echo e($deliverymanService->badge_text); ?></span>
+                            <?php else: ?>
+                                <span class="title_badge">for deliveryman</span>
+                            <?php endif; ?>
+                            <h3><?php echo e($deliverymanService->heading); ?></h3>
+                            <p><?php echo e($deliverymanService->description); ?></p>
+                            <?php if($deliverymanService->features && is_array($deliverymanService->features)): ?>
+                                <ul class="design_block">
+                                    <?php $__currentLoopData = $deliverymanService->features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <li data-aos="fade-up" data-aos-duration="1500">
+                                            <h6><?php echo e($feature['title'] ?? ''); ?></h6>
+                                            <p><?php echo e($feature['description'] ?? ''); ?></p>
+                                        </li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </ul>
+                            <?php else: ?>
+                                <ul class="design_block">
+                                    <li data-aos="fade-up" data-aos-duration="1500">
+                                        <h6>Earn money on your schedule</h6>
+                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting.</p>
+                                    </li>
+                                    <li data-aos="fade-up" data-aos-duration="1500">
+                                        <h6>Flexible delivery options</h6>
+                                        <p>Dummy text of the printing and typesetting industr lorem Ipsum is simply.</p>
+                                    </li>
+                                </ul>
+                            <?php endif; ?>
+                            <div class="btn_block">
+                                <a href="<?php echo e($deliverymanService->button_url ?? '#'); ?>" class="btn puprple_btn ml-0"><?php echo e($deliverymanService->button_text ?? 'Join As Deliveryman'); ?></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="inner_block dark_bg rotate_right" data-aos="fade-up" data-aos-duration="1500">
+                            <div class="img">
+                                <?php if($deliverymanService->image): ?>
+                                    <img src="<?php echo e(asset('storage/' . $deliverymanService->image)); ?>" alt="image">
+                                <?php else: ?>
+                                    <img src="<?php echo e(asset('images/for_restaurant.webp')); ?>" alt="image">
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
         </section>
         <!-- Service Section End -->
@@ -585,26 +730,18 @@
 
                 <div class="container">
                     <div class="section_title">
-                        <?php if($howItWorks && count($howItWorks) > 0 && $howItWorks[0]->badge_text): ?>
-                            <span class="title_badge"><?php echo e($howItWorks[0]->badge_text); ?></span>
+                        <?php if($howItWorksSettings['badge_text']): ?>
+                            <span class="title_badge"><?php echo e($howItWorksSettings['badge_text']); ?></span>
                         <?php else: ?>
                             <span class="title_badge">Easy Steps</span>
                         <?php endif; ?>
                         <h2>
-                            <?php if($howItWorks && count($howItWorks) > 0 && $howItWorks[0]->heading): ?>
-                                <?php echo e($howItWorks[0]->heading); ?>
+                            <?php echo e($howItWorksSettings['heading'] ?: 'How it Works'); ?>
 
-                            <?php else: ?>
-                                How it Works
-                            <?php endif; ?>
                         </h2>
                         <p>
-                            <?php if($howItWorks && count($howItWorks) > 0 && $howItWorks[0]->description): ?>
-                                <?php echo e($howItWorks[0]->description); ?>
+                            <?php echo e($howItWorksSettings['description'] ?: 'Lorem Ipsum is simply dummy text of the printing indus orem Ipsum has been the industrys standard dummy text ever since.'); ?>
 
-                            <?php else: ?>
-                                Lorem Ipsum is simply dummy text of the printing indus orem Ipsum has been the industrys standard dummy text ever since.
-                            <?php endif; ?>
                         </p>
                     </div>
 
@@ -657,18 +794,24 @@
                                 </div>
 
                                 <div class="ctr_app_btn_block">
-                                    <p><strong>Get 50% off on your first order ! Grab it now.</strong></p>
+                                    <?php if($howItWorksSettings['promotional_text']): ?>
+                                        <p><strong><?php echo e($howItWorksSettings['promotional_text']); ?></strong></p>
+                                    <?php endif; ?>
                                     <ul class="app_btn">
+                                        <?php if($howItWorksSettings['show_google_play']): ?>
                                         <li>
-                                            <a href="<?php echo e($hero && $hero->google_play_url ? $hero->google_play_url : '#'); ?>">
+                                            <a href="<?php echo e($howItWorksSettings['google_play_url'] ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#')); ?>">
                                                 <img class="blue_img" src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image">
                                             </a>
                                         </li>
+                                        <?php endif; ?>
+                                        <?php if($howItWorksSettings['show_app_store']): ?>
                                         <li>
-                                            <a href="<?php echo e($hero && $hero->app_store_url ? $hero->app_store_url : '#'); ?>">
+                                            <a href="<?php echo e($howItWorksSettings['app_store_url'] ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#')); ?>">
                                                 <img class="blue_img" src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image">
                                             </a>
                                         </li>
+                                        <?php endif; ?>
                                     </ul>
                                 </div>
                             </div>
@@ -678,7 +821,11 @@
             </div>
 
             <div class="device">
-                <img src="<?php echo e(asset('images/device.webp')); ?>" alt="image">
+                <?php if($howItWorksSettings['bottom_image']): ?>
+                    <img src="<?php echo e(asset('storage/' . $howItWorksSettings['bottom_image'])); ?>" alt="image">
+                <?php else: ?>
+                    <img src="<?php echo e(asset('images/device.webp')); ?>" alt="image">
+                <?php endif; ?>
             </div>
         </section>
         <!-- How it Works Section End -->
@@ -747,11 +894,6 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="ctr_cta">
-                        <div class="btn_block">
-                            <a href="blog-detail.html" class="btn puprple_btn ml-0">Read More Success Story</a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -790,16 +932,20 @@
                                 <p><?php echo e($downloadSection->description); ?></p>
                             </div>
                             <ul class="app_btn" data-aos="fade-up" data-aos-duration="1500">
+                                <?php if(($downloadSection->show_google_play ?? true)): ?>
                                 <li>
                                     <a href="<?php echo e($downloadSection->google_play_url ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#')); ?>">
                                         <img class="blue_img" src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image">
                                     </a>
                                 </li>
+                                <?php endif; ?>
+                                <?php if(($downloadSection->show_app_store ?? true)): ?>
                                 <li>
                                     <a href="<?php echo e($downloadSection->app_store_url ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#')); ?>">
                                         <img class="blue_img" src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image">
                                     </a>
                                 </li>
+                                <?php endif; ?>
                             </ul>
                         </div>
                     </div>
@@ -862,7 +1008,7 @@
 
         <!-- Register Restaurant Section Start -->
         <?php if($registerSection): ?>
-        <section class="row_am register_restaurant">
+        <section class="row_am register_restaurant" <?php if($registerSection->background_image): ?> style="background-image: url('<?php echo e(asset('storage/' . $registerSection->background_image)); ?>'); background-size: cover; background-position: center;" <?php endif; ?>>
             <div class="reg_block" data-aos="fade-up" data-aos-duration="1500">
                 <div class="row">
                     <div class="col-lg-7 col-md-10 col-sm-12 mx-auto">
@@ -911,62 +1057,37 @@
         <?php endif; ?>
         <!-- Register Restaurant Section end -->
 
-        <!-- Blog Section Start -->
-        <section class="blog_section row_am">
-            <div class="container">
-                <div class="section_title" data-aos="fade-up" data-aos-duration="1500">
-                    <span class="title_badge">Blog Post</span>
-                    <h2>Insights & inspirations</h2>
-                </div>
-
-                <div class="blog_listing">
-                    <?php $__empty_1 = true; $__currentLoopData = $blogPosts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $post): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <div class="blog_post" data-aos="fade-up" data-aos-duration="1500">
-                            <a href="#" class="img">
-                                <?php if($post->featured_image): ?>
-                                    <img src="<?php echo e(asset('storage/' . $post->featured_image)); ?>" alt="<?php echo e($post->title); ?>">
+        <!-- Deliveryman Section Start -->
+        <?php if($deliverymanSection): ?>
+        <section class="row_am register_restaurant" <?php if($deliverymanSection->background_image): ?> style="background-image: url('<?php echo e(asset('storage/' . $deliverymanSection->background_image)); ?>'); background-size: cover; background-position: center;" <?php endif; ?>>
+            <div class="reg_block" data-aos="fade-up" data-aos-duration="1500">
+                <div class="row">
+                    <div class="col-lg-7 col-md-10 col-sm-12 mx-auto">
+                        <div class="dap_text">
+                            <div class="section_title white_text" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
+                                <?php if($deliverymanSection->badge_text): ?>
+                                    <span class="title_badge"><?php echo e($deliverymanSection->badge_text); ?></span>
                                 <?php else: ?>
-                                    <img src="<?php echo e(asset('images/blog1.webp')); ?>" alt="<?php echo e($post->title); ?>">
+                                    <span class="title_badge">Join as Deliveryman</span>
                                 <?php endif; ?>
-                            </a>
-                            <div class="text">
-                                <ul class="blog_info">
-                                    <li><?php echo e($post->author); ?></li>
-                                    <li><?php echo e($post->published_at ? $post->published_at->format('M d, Y') : now()->format('M d, Y')); ?></li>
-                                    <li><?php echo e($post->comment_count); ?> Comments</li>
-                                </ul>
-                                <h5><a href="#"><?php echo e($post->title); ?></a></h5>
-                                <div class="tag_more">
-                                    <?php if($post->category): ?>
-                                        <span class="tag"><?php echo e($post->category); ?></span>
-                                    <?php endif; ?>
-                                    <a href="#">Read more <i class="icofont-arrow-right"></i></a>
+                                <h2><?php echo e($deliverymanSection->heading); ?></h2>
+                                <p><?php echo e($deliverymanSection->description); ?></p>
+                            </div>
+                            <div class="ctr_cta">
+                                <div class="btn_block">
+                                    <a href="<?php echo e($deliverymanSection->button_url ?? '#'); ?>" class="btn puprple_btn ml-0"><?php echo e($deliverymanSection->promo_text ?? 'Join As Deliveryman'); ?></a>
                                 </div>
                             </div>
                         </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                        <!-- Default blog posts -->
-                        <div class="blog_post" data-aos="fade-up" data-aos-duration="1500">
-                            <a href="#" class="img">
-                                <img src="<?php echo e(asset('images/blog1.webp')); ?>" alt="image">
-                            </a>
-                            <div class="text">
-                                <ul class="blog_info">
-                                    <li>Admin</li>
-                                    <li>Oct 13, 2024</li>
-                                    <li>25 Comments</li>
-                                </ul>
-                                <h5><a href="#">Top Tips for Choosing the Best Food Delivery App for Your Needs.</a></h5>
-                                <div class="tag_more">
-                                    <span class="tag">Food at home</span>
-                                    <a href="#">Read more <i class="icofont-arrow-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </section>
+        <?php endif; ?>
+        <!-- Deliveryman Section end -->
+
+        <!-- Pre-Footer CTA Section -->
+        <?php echo $__env->make('partials.pre-footer-cta', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
         <!-- Footer-Section start -->
         <footer>
@@ -978,20 +1099,37 @@
                     <div class="row">
                         <div class="col-lg-5 col-md-6 col-12">
                             <div class="abt_side">
-                                <div class="logo"><img src="<?php echo e(asset('images/logo_white.webp')); ?>" alt="image"></div>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry lorem sum has been the industrys standard dummytext ever since the when an unknown printer took.</p>
-                                <ul class="app_btn">
-                                    <li>
-                                        <a href="<?php echo e($hero && $hero->app_store_url ? $hero->app_store_url : '#'); ?>">
-                                            <img src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo e($hero && $hero->google_play_url ? $hero->google_play_url : '#'); ?>">
-                                            <img src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image">
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div class="logo">
+                                    <?php if($footerLogo): ?>
+                                        <img src="<?php echo e(asset('storage/' . $footerLogo)); ?>" alt="Logo">
+                                    <?php else: ?>
+                                        <img src="<?php echo e(asset('images/logo_white.webp')); ?>" alt="image">
+                                    <?php endif; ?>
+                                </div>
+                                <p><?php echo e($footerDetails); ?></p>
+                                <?php if(isset($footerAppStoreButtons)): ?>
+                                    <ul class="app_btn">
+                                        <?php if($footerAppStoreButtons['show_app_store']): ?>
+                                            <li>
+                                                <a href="<?php echo e($footerAppStoreButtons['app_store_url']); ?>">
+                                                    <img src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="App Store">
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
+                                        <?php if($footerAppStoreButtons['show_google_play']): ?>
+                                            <li>
+                                                <a href="<?php echo e($footerAppStoreButtons['google_play_url']); ?>">
+                                                    <img src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="Google Play">
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
+                                    </ul>
+                                <?php else: ?>
+                                    <ul class="app_btn">
+                                        <li><a href="#"><img src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image"></a></li>
+                                        <li><a href="#"><img src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image"></a></li>
+                                    </ul>
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -999,10 +1137,13 @@
                             <div class="links">
                                 <h5>Quick Links</h5>
                                 <ul>
-                                    <li><a href="<?php echo e(route('home')); ?>">Home</a></li>
-                                    <li><a href="about.html">About us</a></li>
-                                    <li><a href="blog-list.html">Blog</a></li>
-                                    <li><a href="contact.html">Contact us</a></li>
+                                    <?php $__empty_1 = true; $__currentLoopData = $footerQuickLinks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $link): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <li><a href="<?php echo e($link->url ? $link->url : '#'); ?>"><?php echo e($link->label); ?></a></li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                        <li><a href="<?php echo e(route('home')); ?>">Home</a></li>
+                                        <li><a href="<?php echo e(route('about')); ?>">About us</a></li>
+                                        <li><a href="<?php echo e(route('contact')); ?>">Contact us</a></li>
+                                    <?php endif; ?>
                                 </ul>
                             </div>
                         </div>
@@ -1011,11 +1152,15 @@
                             <div class="links">
                                 <h5>Support</h5>
                                 <ul>
-                                    <li><a href="#">FAQs</a></li>
-                                    <li><a href="#">Support</a></li>
-                                    <li><a href="#">How it works</a></li>
-                                    <li><a href="#">Terms & conditions</a></li>
-                                    <li><a href="#">Privacy policy</a></li>
+                                    <?php $__empty_1 = true; $__currentLoopData = $footerSupportMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <li><a href="<?php echo e($menu->url ? $menu->url : '#'); ?>"><?php echo e($menu->label); ?></a></li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                        <li><a href="#">FAQs</a></li>
+                                        <li><a href="#">Support</a></li>
+                                        <li><a href="#">How it works</a></li>
+                                        <li><a href="#">Terms & conditions</a></li>
+                                        <li><a href="#">Privacy policy</a></li>
+                                    <?php endif; ?>
                                 </ul>
                             </div>
                         </div>
@@ -1024,13 +1169,85 @@
                             <h5>Subscribe us</h5>
                             <div class="news_letter">
                                 <p>Subscribe our newsleter to receive latest updates regularly from us!</p>
-                                <form>
+                                <form id="newsletterForm" action="<?php echo e(route('newsletter.subscribe')); ?>" method="POST">
+                                    <?php echo csrf_field(); ?>
+                                    <div id="newsletter-message" style="display: none; margin-bottom: 10px; padding: 10px; border-radius: 5px; font-size: 14px;"></div>
                                     <div class="form-group">
-                                        <input type="email" class="form-control" placeholder="Enter your email">
-                                        <button class="btn" aria-label="subscribe"><i class="icofont-paper-plane"></i></button>
+                                        <input type="email" name="email" id="newsletter_email" class="form-control" placeholder="Enter your email" required>
+                                        <button type="submit" class="btn" aria-label="subscribe" id="newsletterSubmitBtn">
+                                            <span id="newsletterBtnText"><i class="icofont-paper-plane"></i></span>
+                                            <span id="newsletterBtnLoader" style="display: none;">Submitting...</span>
+                                        </button>
                                     </div>
                                     <p class="note">By clicking send link you agree to receive message.</p>
                                 </form>
+                                <script>
+                                    document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+                                        e.preventDefault();
+                                        
+                                        const form = this;
+                                        const submitBtn = document.getElementById('newsletterSubmitBtn');
+                                        const submitBtnText = document.getElementById('newsletterBtnText');
+                                        const submitBtnLoader = document.getElementById('newsletterBtnLoader');
+                                        const messageDiv = document.getElementById('newsletter-message');
+                                        const formData = new FormData(form);
+                                        
+                                        // Disable submit button and show loader
+                                        submitBtn.disabled = true;
+                                        submitBtnText.style.display = 'none';
+                                        submitBtnLoader.style.display = 'inline';
+                                        
+                                        // Hide previous messages
+                                        messageDiv.style.display = 'none';
+                                        messageDiv.className = '';
+                                        messageDiv.textContent = '';
+                                        
+                                        // Submit via AJAX
+                                        fetch(form.action, {
+                                            method: 'POST',
+                                            body: formData,
+                                            headers: {
+                                                'X-Requested-With': 'XMLHttpRequest',
+                                                'Accept': 'application/json'
+                                            }
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            // Show message
+                                            messageDiv.style.display = 'block';
+                                            messageDiv.textContent = data.message;
+                                            
+                                            if (data.success) {
+                                                // Success message
+                                                messageDiv.style.backgroundColor = '#d4edda';
+                                                messageDiv.style.color = '#155724';
+                                                messageDiv.style.border = '1px solid #c3e6cb';
+                                                
+                                                // Reset form
+                                                form.reset();
+                                            } else {
+                                                // Error message
+                                                messageDiv.style.backgroundColor = '#f8d7da';
+                                                messageDiv.style.color = '#721c24';
+                                                messageDiv.style.border = '1px solid #f5c6cb';
+                                            }
+                                        })
+                                        .catch(error => {
+                                            // Show error message
+                                            messageDiv.style.display = 'block';
+                                            messageDiv.style.backgroundColor = '#f8d7da';
+                                            messageDiv.style.color = '#721c24';
+                                            messageDiv.style.border = '1px solid #f5c6cb';
+                                            messageDiv.textContent = 'An error occurred. Please try again later.';
+                                        })
+                                        .finally(() => {
+                                            // Re-enable submit button
+                                            submitBtn.disabled = false;
+                                            submitBtnText.style.display = 'inline';
+                                            submitBtnLoader.style.display = 'none';
+                                        });
+                                    });
+                                </script>
                             </div>
                         </div>
                     </div>
@@ -1040,18 +1257,28 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-4">
-                                <p>© Copyrights 2024. All rights reserved.</p>
+                                <p><?php echo e(isset($footerCopyrightText) ? str_replace('%Y', date('Y'), $footerCopyrightText) : '© Copyrights ' . date('Y') . '. All rights reserved.'); ?></p>
                             </div>
                             <div class="col-md-4">
                                 <ul class="social_media">
-                                    <li><a href="#" aria-label="facebook page"><i class="icofont-facebook"></i></a></li>
-                                    <li><a href="#" aria-label="twitter page"><i class="icofont-twitter"></i></a></li>
-                                    <li><a href="#" aria-label="instagram page"><i class="icofont-instagram"></i></a></li>
-                                    <li><a href="#" aria-label="pinterest page"><i class="icofont-pinterest"></i></a></li>
+                                    <?php if(isset($footerSocialLinks) && $footerSocialLinks->count() > 0): ?>
+                                        <?php $__currentLoopData = $footerSocialLinks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $socialLink): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <li>
+                                                <a href="<?php echo e($socialLink->url); ?>" aria-label="<?php echo e($socialLink->label ?? $socialLink->platform . ' page'); ?>" target="_blank" rel="noopener noreferrer">
+                                                    <i class="<?php echo e($socialLink->icon_class); ?>"></i>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
+                                        <li><a href="#" aria-label="facebook page"><i class="icofont-facebook"></i></a></li>
+                                        <li><a href="#" aria-label="twitter page"><i class="icofont-twitter"></i></a></li>
+                                        <li><a href="#" aria-label="instagram page"><i class="icofont-instagram"></i></a></li>
+                                        <li><a href="#" aria-label="pinterest page"><i class="icofont-pinterest"></i></a></li>
+                                    <?php endif; ?>
                                 </ul>
                             </div>
                             <div class="col-md-4">
-                                <p class="developer_text">Design & developed by <a href="#" target="blank">Kalanidhi Themes</a></p>
+                                <p class="developer_text">Design & developed by <a href="http://skylon-it.com/" target="blank">Skylon-IT</a></p>
                             </div>
                         </div>
                     </div>

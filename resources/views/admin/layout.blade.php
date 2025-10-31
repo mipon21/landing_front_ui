@@ -55,9 +55,6 @@
                     <a href="{{ route('admin.testimonials.index') }}" class="nav-link {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
                         <i class="bi bi-chat-left-text me-2"></i> Testimonials
                     </a>
-                    <a href="{{ route('admin.blog.index') }}" class="nav-link {{ request()->routeIs('admin.blog.*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text me-2"></i> Blog Posts
-                    </a>
                     <a href="{{ route('admin.why-choose-us.index') }}" class="nav-link {{ request()->routeIs('admin.why-choose-us.*') ? 'active' : '' }}">
                         <i class="bi bi-question-circle me-2"></i> Why Choose Us
                     </a>
@@ -69,6 +66,29 @@
                     </a>
                     <a href="{{ route('admin.download-sections.index') }}" class="nav-link {{ request()->routeIs('admin.download-sections.*') ? 'active' : '' }}">
                         <i class="bi bi-download me-2"></i> Download Sections
+                    </a>
+                    <a href="{{ route('admin.about-pages.index') }}" class="nav-link {{ request()->routeIs('admin.about-pages.*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text me-2"></i> About Page
+                    </a>
+                    <a href="{{ route('admin.contact-pages.index') }}" class="nav-link {{ request()->routeIs('admin.contact-pages.*') ? 'active' : '' }}">
+                        <i class="bi bi-envelope me-2"></i> Contact Page
+                    </a>
+                    <a href="{{ route('admin.privacy-policy.index') }}" class="nav-link {{ request()->routeIs('admin.privacy-policy.*') ? 'active' : '' }}">
+                        <i class="bi bi-shield-lock me-2"></i> Privacy Policy
+                    </a>
+                    <a href="{{ route('admin.terms.index') }}" class="nav-link {{ request()->routeIs('admin.terms.*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text me-2"></i> Terms & Conditions
+                    </a>
+                    <hr class="text-light">
+                    <h6 class="px-3 py-2 text-light text-uppercase small">Settings</h6>
+                    <a href="{{ route('admin.settings.general.index') }}" class="nav-link {{ request()->routeIs('admin.settings.general.*') ? 'active' : '' }}">
+                        <i class="bi bi-gear me-2"></i> General
+                    </a>
+                    <a href="{{ route('admin.settings.header.index') }}" class="nav-link {{ request()->routeIs('admin.settings.header.*') ? 'active' : '' }}">
+                        <i class="bi bi-header me-2"></i> Header
+                    </a>
+                    <a href="{{ route('admin.settings.footer.index') }}" class="nav-link {{ request()->routeIs('admin.settings.footer.*') ? 'active' : '' }}">
+                        <i class="bi bi-layout-bottom me-2"></i> Footer
                     </a>
                     <hr class="text-light">
                     <form action="{{ route('admin.logout') }}" method="POST">

@@ -5,8 +5,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Order your favorite meals with ease using our Food Delivery mobile app. Browse local restaurants, customize your order, and enjoy fast, reliable delivery straight to your door. Download now for convenient, delicious dining at your fingertips.">
-    <title>Food Delivery Mobile App Landing Page HTML Template</title>
+    <meta name="description" content="{{ $siteDescription }}">
+    <title>{{ $siteName }}</title>
+    
+    @if($siteFavicon)
+        @php
+            // Ensure the path doesn't have duplicate storage/ prefix
+            $faviconPath = str_replace('storage/', '', $siteFavicon);
+            $faviconUrl = asset('storage/' . $faviconPath);
+            
+            // Use file modification time for cache busting
+            $faviconFile = storage_path('app/public/' . $faviconPath);
+            $faviconTimestamp = file_exists($faviconFile) ? filemtime($faviconFile) : time();
+            
+            // Determine MIME type based on file extension
+            $extension = strtolower(pathinfo($faviconPath, PATHINFO_EXTENSION));
+            $mimeTypes = [
+                'ico' => 'image/x-icon',
+                'png' => 'image/png',
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'gif' => 'image/gif',
+            ];
+            $mimeType = $mimeTypes[$extension] ?? 'image/x-icon';
+        @endphp
+        <link rel="icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}?v={{ $faviconTimestamp }}">
+        <link rel="shortcut icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}?v={{ $faviconTimestamp }}">
+        <link rel="apple-touch-icon" href="{{ $faviconUrl }}?v={{ $faviconTimestamp }}">
+    @else
+        <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}" type="image/x-icon">
+        <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
+    @endif
 
     <!-- icofont-css-link -->
     <link rel="stylesheet" href="{{ asset('css/icofont.min.css') }}">
@@ -20,8 +49,6 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <!-- Responsive-Style-link -->
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}" type="image/x-icon">
     <!-- font 1 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,46 +65,7 @@
         <div id="loader"></div>
     </div>
 
-    <!-- Header Start -->
-    <header>
-        <div class="container">
-            <nav class="navbar navbar-expand-lg">
-                <a class="navbar-brand" href="{{ route('home') }}">
-                    <img src="{{ asset('images/logo.webp') }}" alt="Logo">
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon">
-                        <span class="toggle-wrap">
-                            <span class="toggle-bar"></span>
-                        </span>
-                    </span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item has_dropdown">
-                            <a class="nav-link" href="{{ route('home') }}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="about.html">About us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="reviews.html">Reviews</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Contact</a>
-                        </li>
-                        <li class="nav-item">
-                            <div class="btn_block">
-                                <a class="nav-link dark_btn" href="contact.html">7 Days Free Trial</a>
-                                <div class="btn_bottom"></div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </header>
+    @include('partials.header')
 
     <!-- Banner-Section-Start -->
     <section class="banner_section" id="home_sec">
@@ -156,8 +144,119 @@
                         </p>
                     </div>
 
+                    <!-- Search Section -->
+                    @if($hero && ($hero->show_search_section ?? false))
+                    <div class="hero_search_section">
+                        <form action="{{ $hero->search_section_button_url ?? '#' }}" method="GET" class="hero_search_form">
+                            <div class="search_input_wrapper">
+                                <input 
+                                    type="text" 
+                                    name="location" 
+                                    id="hero_location_input"
+                                    class="form-control hero_location_input" 
+                                    placeholder="{{ $hero->search_section_placeholder ?? 'Enter your location' }}"
+                                >
+                                <button 
+                                    type="button" 
+                                    class="locate_me_btn" 
+                                    onclick="getUserLocation()"
+                                >
+                                    <i class="icofont-location-pin"></i>
+                                    <span class="locate_me_text">{{ $hero->search_section_locate_button_text ?? 'Locate me' }}</span>
+                                </button>
+                            </div>
+                            <button 
+                                type="submit" 
+                                class="btn find_food_btn"
+                            >
+                                {{ $hero->search_section_button_text ?? 'Find Food' }}
+                            </button>
+                        </form>
+                        <script>
+                            function getUserLocation() {
+                                const locationInput = document.getElementById('hero_location_input');
+                                const locateBtn = document.querySelector('.locate_me_btn');
+                                const locateText = document.querySelector('.locate_me_text');
+                                
+                                // Show loading state
+                                const originalText = locateText.textContent;
+                                locateText.textContent = 'Locating...';
+                                locateBtn.style.pointerEvents = 'none';
+                                locateBtn.style.opacity = '0.7';
+                                
+                                if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(
+                                        function(position) {
+                                            const lat = position.coords.latitude;
+                                            const lng = position.coords.longitude;
+                                            
+                                            // Use reverse geocoding to get address
+                                            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    let locationText = '';
+                                                    if (data && data.address) {
+                                                        // Try to build a readable address
+                                                        const addr = data.address;
+                                                        if (addr.road || addr.street) {
+                                                            locationText = (addr.road || addr.street) + 
+                                                                (addr.house_number ? ' ' + addr.house_number : '') +
+                                                                (addr.city || addr.town || addr.village ? ', ' + (addr.city || addr.town || addr.village) : '') +
+                                                                (addr.state ? ', ' + addr.state : '') +
+                                                                (addr.country ? ', ' + addr.country : '');
+                                                        } else if (addr.city || addr.town || addr.village) {
+                                                            locationText = (addr.city || addr.town || addr.village) +
+                                                                (addr.state ? ', ' + addr.state : '') +
+                                                                (addr.country ? ', ' + addr.country : '');
+                                                        } else {
+                                                            locationText = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                                                        }
+                                                    } else {
+                                                        locationText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                                                    }
+                                                    
+                                                    // Display location in input field
+                                                    locationInput.value = locationText;
+                                                    
+                                                    // Reset button state
+                                                    locateText.textContent = originalText;
+                                                    locateBtn.style.pointerEvents = 'auto';
+                                                    locateBtn.style.opacity = '1';
+                                                })
+                                                .catch(error => {
+                                                    // Fallback to coordinates if geocoding fails
+                                                    locationInput.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                                                    
+                                                    // Reset button state
+                                                    locateText.textContent = originalText;
+                                                    locateBtn.style.pointerEvents = 'auto';
+                                                    locateBtn.style.opacity = '1';
+                                                });
+                                        },
+                                        function(error) {
+                                            // Reset button state
+                                            locateText.textContent = originalText;
+                                            locateBtn.style.pointerEvents = 'auto';
+                                            locateBtn.style.opacity = '1';
+                                            
+                                            // Show error message
+                                            alert('Unable to get your location. Please enter manually.');
+                                        }
+                                    );
+                                } else {
+                                    alert('Geolocation is not supported by this browser.');
+                                    locateText.textContent = originalText;
+                                    locateBtn.style.pointerEvents = 'auto';
+                                    locateBtn.style.opacity = '1';
+                                }
+                            }
+                        </script>
+                    </div>
+                    @endif
+
                     <!-- app buttons -->
                     <ul class="app_btn">
+                        @if($hero && ($hero->show_google_play ?? true))
                         <li>
                             <a href="{{ $hero && $hero->google_play_url ? $hero->google_play_url : '#' }}">
                                 @if($hero && $hero->google_play_image)
@@ -167,6 +266,8 @@
                                 @endif
                             </a>
                         </li>
+                        @endif
+                        @if($hero && ($hero->show_app_store ?? true))
                         <li>
                             <a href="{{ $hero && $hero->app_store_url ? $hero->app_store_url : '#' }}">
                                 @if($hero && $hero->app_store_image)
@@ -176,6 +277,7 @@
                                 @endif
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </div>
 
@@ -250,7 +352,7 @@
         <section class="row_am trusted_section">
             <div class="container">
                 <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                    <h4>Trusted by 2.5k+ restaurant</h4>
+                    <h4>Trusted by Top Restaurant</h4>
                 </div>
 
                 <div class="company_logos">
@@ -276,7 +378,7 @@
 
                 <div class="ctr_cta">
                     <div class="btn_block">
-                        <a href="blog-detail.html" class="btn puprple_btn ml-0">Register Your Restaurant</a>
+                        <a href="{{ $restaurantRegisterButton['url'] }}" class="btn puprple_btn ml-0">{{ $restaurantRegisterButton['text'] }}</a>
                     </div>
                 </div>
             </div>
@@ -289,25 +391,13 @@
                     <div class="row">
                         <!-- section title -->
                         <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                            @if($whyChooseUs && count($whyChooseUs) > 0 && $whyChooseUs[0]->badge_text)
-                                <span class="title_badge">{{ $whyChooseUs[0]->badge_text }}</span>
+                            @if($whyChooseUsSettings['badge_text'])
+                                <span class="title_badge">{{ $whyChooseUsSettings['badge_text'] }}</span>
                             @else
                                 <span class="title_badge">why use Appiq</span>
                             @endif
-                            <h2>
-                                @if($whyChooseUs && count($whyChooseUs) > 0 && $whyChooseUs[0]->heading)
-                                    {{ $whyChooseUs[0]->heading }}
-                                @else
-                                    Why choose us
-                                @endif
-                            </h2>
-                            <p>
-                                @if($whyChooseUs && count($whyChooseUs) > 0 && $whyChooseUs[0]->description)
-                                    {{ $whyChooseUs[0]->description }}
-                                @else
-                                    Lorem Ipsum is simply dummy text of the printing and typese tting indus orem Ipsum has beenthe standard dummy.
-                                @endif
-                            </p>
+                            <h2>{{ $whyChooseUsSettings['heading'] }}</h2>
+                            <p>{{ $whyChooseUsSettings['description'] }}</p>
                         </div>
 
                         <div class="dtat_box">
@@ -356,8 +446,8 @@
 
                             <div class="col-lg-6 col-md-12">
                                 <div class="why_us_new_img" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                                    @if($whyChooseUs && count($whyChooseUs) > 0 && $whyChooseUs[0]->feature_image)
-                                        <img src="{{ asset('storage/' . $whyChooseUs[0]->feature_image) }}" alt="image">
+                                    @if($whyChooseUsFeatureImage)
+                                        <img src="{{ asset('storage/' . $whyChooseUsFeatureImage) }}" alt="image">
                                     @else
                                         <img src="{{ asset('images/features_frame.webp') }}" alt="image">
                                     @endif
@@ -404,16 +494,20 @@
             <div class="ctr_app_btn_block">
                 <p><strong>Free food delivery for first 5 orders!</strong></p>
                 <ul class="app_btn">
+                    @if($dishesSectionButtons['show_google_play'])
                     <li>
-                        <a href="{{ $hero && $hero->google_play_url ? $hero->google_play_url : '#' }}">
+                        <a href="{{ $dishesSectionButtons['google_play_url'] ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#') }}">
                             <img class="blue_img" src="{{ asset('images/googleplay.webp') }}" alt="image">
                         </a>
                     </li>
+                    @endif
+                    @if($dishesSectionButtons['show_app_store'])
                     <li>
-                        <a href="{{ $hero && $hero->app_store_url ? $hero->app_store_url : '#' }}">
+                        <a href="{{ $dishesSectionButtons['app_store_url'] ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#') }}">
                             <img class="blue_img" src="{{ asset('images/appstorebtn.webp') }}" alt="image">
                         </a>
                     </li>
+                    @endif
                 </ul>
             </div>
         </section>
@@ -430,6 +524,7 @@
                 @php
                     $restaurantService = $services->where('type', 'restaurant')->first();
                     $customerService = $services->where('type', 'customer')->first();
+                    $deliverymanService = $services->where('type', 'deliveryman')->first();
                 @endphp
 
                 <div class="row service_blocks flex-row-reverse">
@@ -567,6 +662,57 @@
                         </div>
                     </div>
                 </div>
+
+                @if($deliverymanService)
+                <div class="row service_blocks flex-row-reverse no_bottom_padding">
+                    <div class="col-md-6">
+                        <div class="service_text right_side" data-aos="fade-up" data-aos-duration="1500">
+                            @if($deliverymanService->badge_text)
+                                <span class="title_badge">{{ $deliverymanService->badge_text }}</span>
+                            @else
+                                <span class="title_badge">for deliveryman</span>
+                            @endif
+                            <h3>{{ $deliverymanService->heading }}</h3>
+                            <p>{{ $deliverymanService->description }}</p>
+                            @if($deliverymanService->features && is_array($deliverymanService->features))
+                                <ul class="design_block">
+                                    @foreach($deliverymanService->features as $feature)
+                                        <li data-aos="fade-up" data-aos-duration="1500">
+                                            <h6>{{ $feature['title'] ?? '' }}</h6>
+                                            <p>{{ $feature['description'] ?? '' }}</p>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <ul class="design_block">
+                                    <li data-aos="fade-up" data-aos-duration="1500">
+                                        <h6>Earn money on your schedule</h6>
+                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting.</p>
+                                    </li>
+                                    <li data-aos="fade-up" data-aos-duration="1500">
+                                        <h6>Flexible delivery options</h6>
+                                        <p>Dummy text of the printing and typesetting industr lorem Ipsum is simply.</p>
+                                    </li>
+                                </ul>
+                            @endif
+                            <div class="btn_block">
+                                <a href="{{ $deliverymanService->button_url ?? '#' }}" class="btn puprple_btn ml-0">{{ $deliverymanService->button_text ?? 'Join As Deliveryman' }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="inner_block dark_bg rotate_right" data-aos="fade-up" data-aos-duration="1500">
+                            <div class="img">
+                                @if($deliverymanService->image)
+                                    <img src="{{ asset('storage/' . $deliverymanService->image) }}" alt="image">
+                                @else
+                                    <img src="{{ asset('images/for_restaurant.webp') }}" alt="image">
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </section>
         <!-- Service Section End -->
@@ -579,24 +725,16 @@
 
                 <div class="container">
                     <div class="section_title">
-                        @if($howItWorks && count($howItWorks) > 0 && $howItWorks[0]->badge_text)
-                            <span class="title_badge">{{ $howItWorks[0]->badge_text }}</span>
+                        @if($howItWorksSettings['badge_text'])
+                            <span class="title_badge">{{ $howItWorksSettings['badge_text'] }}</span>
                         @else
                             <span class="title_badge">Easy Steps</span>
                         @endif
                         <h2>
-                            @if($howItWorks && count($howItWorks) > 0 && $howItWorks[0]->heading)
-                                {{ $howItWorks[0]->heading }}
-                            @else
-                                How it Works
-                            @endif
+                            {{ $howItWorksSettings['heading'] ?: 'How it Works' }}
                         </h2>
                         <p>
-                            @if($howItWorks && count($howItWorks) > 0 && $howItWorks[0]->description)
-                                {{ $howItWorks[0]->description }}
-                            @else
-                                Lorem Ipsum is simply dummy text of the printing indus orem Ipsum has been the industrys standard dummy text ever since.
-                            @endif
+                            {{ $howItWorksSettings['description'] ?: 'Lorem Ipsum is simply dummy text of the printing indus orem Ipsum has been the industrys standard dummy text ever since.' }}
                         </p>
                     </div>
 
@@ -649,18 +787,24 @@
                                 </div>
 
                                 <div class="ctr_app_btn_block">
-                                    <p><strong>Get 50% off on your first order ! Grab it now.</strong></p>
+                                    @if($howItWorksSettings['promotional_text'])
+                                        <p><strong>{{ $howItWorksSettings['promotional_text'] }}</strong></p>
+                                    @endif
                                     <ul class="app_btn">
+                                        @if($howItWorksSettings['show_google_play'])
                                         <li>
-                                            <a href="{{ $hero && $hero->google_play_url ? $hero->google_play_url : '#' }}">
+                                            <a href="{{ $howItWorksSettings['google_play_url'] ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#') }}">
                                                 <img class="blue_img" src="{{ asset('images/googleplay.webp') }}" alt="image">
                                             </a>
                                         </li>
+                                        @endif
+                                        @if($howItWorksSettings['show_app_store'])
                                         <li>
-                                            <a href="{{ $hero && $hero->app_store_url ? $hero->app_store_url : '#' }}">
+                                            <a href="{{ $howItWorksSettings['app_store_url'] ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#') }}">
                                                 <img class="blue_img" src="{{ asset('images/appstorebtn.webp') }}" alt="image">
                                             </a>
                                         </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
@@ -670,7 +814,11 @@
             </div>
 
             <div class="device">
-                <img src="{{ asset('images/device.webp') }}" alt="image">
+                @if($howItWorksSettings['bottom_image'])
+                    <img src="{{ asset('storage/' . $howItWorksSettings['bottom_image']) }}" alt="image">
+                @else
+                    <img src="{{ asset('images/device.webp') }}" alt="image">
+                @endif
             </div>
         </section>
         <!-- How it Works Section End -->
@@ -738,11 +886,6 @@
                         @endforelse
                     </div>
 
-                    <div class="ctr_cta">
-                        <div class="btn_block">
-                            <a href="blog-detail.html" class="btn puprple_btn ml-0">Read More Success Story</a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -781,16 +924,20 @@
                                 <p>{{ $downloadSection->description }}</p>
                             </div>
                             <ul class="app_btn" data-aos="fade-up" data-aos-duration="1500">
+                                @if(($downloadSection->show_google_play ?? true))
                                 <li>
                                     <a href="{{ $downloadSection->google_play_url ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#') }}">
                                         <img class="blue_img" src="{{ asset('images/googleplay.webp') }}" alt="image">
                                     </a>
                                 </li>
+                                @endif
+                                @if(($downloadSection->show_app_store ?? true))
                                 <li>
                                     <a href="{{ $downloadSection->app_store_url ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#') }}">
                                         <img class="blue_img" src="{{ asset('images/appstorebtn.webp') }}" alt="image">
                                     </a>
                                 </li>
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -853,7 +1000,7 @@
 
         <!-- Register Restaurant Section Start -->
         @if($registerSection)
-        <section class="row_am register_restaurant">
+        <section class="row_am register_restaurant" @if($registerSection->background_image) style="background-image: url('{{ asset('storage/' . $registerSection->background_image) }}'); background-size: cover; background-position: center;" @endif>
             <div class="reg_block" data-aos="fade-up" data-aos-duration="1500">
                 <div class="row">
                     <div class="col-lg-7 col-md-10 col-sm-12 mx-auto">
@@ -902,62 +1049,37 @@
         @endif
         <!-- Register Restaurant Section end -->
 
-        <!-- Blog Section Start -->
-        <section class="blog_section row_am">
-            <div class="container">
-                <div class="section_title" data-aos="fade-up" data-aos-duration="1500">
-                    <span class="title_badge">Blog Post</span>
-                    <h2>Insights & inspirations</h2>
-                </div>
-
-                <div class="blog_listing">
-                    @forelse($blogPosts as $post)
-                        <div class="blog_post" data-aos="fade-up" data-aos-duration="1500">
-                            <a href="#" class="img">
-                                @if($post->featured_image)
-                                    <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}">
+        <!-- Deliveryman Section Start -->
+        @if($deliverymanSection)
+        <section class="row_am register_restaurant" @if($deliverymanSection->background_image) style="background-image: url('{{ asset('storage/' . $deliverymanSection->background_image) }}'); background-size: cover; background-position: center;" @endif>
+            <div class="reg_block" data-aos="fade-up" data-aos-duration="1500">
+                <div class="row">
+                    <div class="col-lg-7 col-md-10 col-sm-12 mx-auto">
+                        <div class="dap_text">
+                            <div class="section_title white_text" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
+                                @if($deliverymanSection->badge_text)
+                                    <span class="title_badge">{{ $deliverymanSection->badge_text }}</span>
                                 @else
-                                    <img src="{{ asset('images/blog1.webp') }}" alt="{{ $post->title }}">
+                                    <span class="title_badge">Join as Deliveryman</span>
                                 @endif
-                            </a>
-                            <div class="text">
-                                <ul class="blog_info">
-                                    <li>{{ $post->author }}</li>
-                                    <li>{{ $post->published_at ? $post->published_at->format('M d, Y') : now()->format('M d, Y') }}</li>
-                                    <li>{{ $post->comment_count }} Comments</li>
-                                </ul>
-                                <h5><a href="#">{{ $post->title }}</a></h5>
-                                <div class="tag_more">
-                                    @if($post->category)
-                                        <span class="tag">{{ $post->category }}</span>
-                                    @endif
-                                    <a href="#">Read more <i class="icofont-arrow-right"></i></a>
+                                <h2>{{ $deliverymanSection->heading }}</h2>
+                                <p>{{ $deliverymanSection->description }}</p>
+                            </div>
+                            <div class="ctr_cta">
+                                <div class="btn_block">
+                                    <a href="{{ $deliverymanSection->button_url ?? '#' }}" class="btn puprple_btn ml-0">{{ $deliverymanSection->promo_text ?? 'Join As Deliveryman' }}</a>
                                 </div>
                             </div>
                         </div>
-                    @empty
-                        <!-- Default blog posts -->
-                        <div class="blog_post" data-aos="fade-up" data-aos-duration="1500">
-                            <a href="#" class="img">
-                                <img src="{{ asset('images/blog1.webp') }}" alt="image">
-                            </a>
-                            <div class="text">
-                                <ul class="blog_info">
-                                    <li>Admin</li>
-                                    <li>Oct 13, 2024</li>
-                                    <li>25 Comments</li>
-                                </ul>
-                                <h5><a href="#">Top Tips for Choosing the Best Food Delivery App for Your Needs.</a></h5>
-                                <div class="tag_more">
-                                    <span class="tag">Food at home</span>
-                                    <a href="#">Read more <i class="icofont-arrow-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforelse
+                    </div>
                 </div>
             </div>
         </section>
+        @endif
+        <!-- Deliveryman Section end -->
+
+        <!-- Pre-Footer CTA Section -->
+        @include('partials.pre-footer-cta')
 
         <!-- Footer-Section start -->
         <footer>
@@ -969,20 +1091,37 @@
                     <div class="row">
                         <div class="col-lg-5 col-md-6 col-12">
                             <div class="abt_side">
-                                <div class="logo"><img src="{{ asset('images/logo_white.webp') }}" alt="image"></div>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry lorem sum has been the industrys standard dummytext ever since the when an unknown printer took.</p>
-                                <ul class="app_btn">
-                                    <li>
-                                        <a href="{{ $hero && $hero->app_store_url ? $hero->app_store_url : '#' }}">
-                                            <img src="{{ asset('images/appstorebtn.webp') }}" alt="image">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ $hero && $hero->google_play_url ? $hero->google_play_url : '#' }}">
-                                            <img src="{{ asset('images/googleplay.webp') }}" alt="image">
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div class="logo">
+                                    @if($footerLogo)
+                                        <img src="{{ asset('storage/' . $footerLogo) }}" alt="Logo">
+                                    @else
+                                        <img src="{{ asset('images/logo_white.webp') }}" alt="image">
+                                    @endif
+                                </div>
+                                <p>{{ $footerDetails }}</p>
+                                @if(isset($footerAppStoreButtons))
+                                    <ul class="app_btn">
+                                        @if($footerAppStoreButtons['show_app_store'])
+                                            <li>
+                                                <a href="{{ $footerAppStoreButtons['app_store_url'] }}">
+                                                    <img src="{{ asset('images/appstorebtn.webp') }}" alt="App Store">
+                                                </a>
+                                            </li>
+                                        @endif
+                                        @if($footerAppStoreButtons['show_google_play'])
+                                            <li>
+                                                <a href="{{ $footerAppStoreButtons['google_play_url'] }}">
+                                                    <img src="{{ asset('images/googleplay.webp') }}" alt="Google Play">
+                                                </a>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                @else
+                                    <ul class="app_btn">
+                                        <li><a href="#"><img src="{{ asset('images/appstorebtn.webp') }}" alt="image"></a></li>
+                                        <li><a href="#"><img src="{{ asset('images/googleplay.webp') }}" alt="image"></a></li>
+                                    </ul>
+                                @endif
                             </div>
                         </div>
 
@@ -990,10 +1129,13 @@
                             <div class="links">
                                 <h5>Quick Links</h5>
                                 <ul>
-                                    <li><a href="{{ route('home') }}">Home</a></li>
-                                    <li><a href="about.html">About us</a></li>
-                                    <li><a href="blog-list.html">Blog</a></li>
-                                    <li><a href="contact.html">Contact us</a></li>
+                                    @forelse($footerQuickLinks as $link)
+                                        <li><a href="{{ $link->url ? $link->url : '#' }}">{{ $link->label }}</a></li>
+                                    @empty
+                                        <li><a href="{{ route('home') }}">Home</a></li>
+                                        <li><a href="{{ route('about') }}">About us</a></li>
+                                        <li><a href="{{ route('contact') }}">Contact us</a></li>
+                                    @endforelse
                                 </ul>
                             </div>
                         </div>
@@ -1002,11 +1144,15 @@
                             <div class="links">
                                 <h5>Support</h5>
                                 <ul>
-                                    <li><a href="#">FAQs</a></li>
-                                    <li><a href="#">Support</a></li>
-                                    <li><a href="#">How it works</a></li>
-                                    <li><a href="#">Terms & conditions</a></li>
-                                    <li><a href="#">Privacy policy</a></li>
+                                    @forelse($footerSupportMenus as $menu)
+                                        <li><a href="{{ $menu->url ? $menu->url : '#' }}">{{ $menu->label }}</a></li>
+                                    @empty
+                                        <li><a href="#">FAQs</a></li>
+                                        <li><a href="#">Support</a></li>
+                                        <li><a href="#">How it works</a></li>
+                                        <li><a href="#">Terms & conditions</a></li>
+                                        <li><a href="#">Privacy policy</a></li>
+                                    @endforelse
                                 </ul>
                             </div>
                         </div>
@@ -1015,13 +1161,85 @@
                             <h5>Subscribe us</h5>
                             <div class="news_letter">
                                 <p>Subscribe our newsleter to receive latest updates regularly from us!</p>
-                                <form>
+                                <form id="newsletterForm" action="{{ route('newsletter.subscribe') }}" method="POST">
+                                    @csrf
+                                    <div id="newsletter-message" style="display: none; margin-bottom: 10px; padding: 10px; border-radius: 5px; font-size: 14px;"></div>
                                     <div class="form-group">
-                                        <input type="email" class="form-control" placeholder="Enter your email">
-                                        <button class="btn" aria-label="subscribe"><i class="icofont-paper-plane"></i></button>
+                                        <input type="email" name="email" id="newsletter_email" class="form-control" placeholder="Enter your email" required>
+                                        <button type="submit" class="btn" aria-label="subscribe" id="newsletterSubmitBtn">
+                                            <span id="newsletterBtnText"><i class="icofont-paper-plane"></i></span>
+                                            <span id="newsletterBtnLoader" style="display: none;">Submitting...</span>
+                                        </button>
                                     </div>
                                     <p class="note">By clicking send link you agree to receive message.</p>
                                 </form>
+                                <script>
+                                    document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+                                        e.preventDefault();
+                                        
+                                        const form = this;
+                                        const submitBtn = document.getElementById('newsletterSubmitBtn');
+                                        const submitBtnText = document.getElementById('newsletterBtnText');
+                                        const submitBtnLoader = document.getElementById('newsletterBtnLoader');
+                                        const messageDiv = document.getElementById('newsletter-message');
+                                        const formData = new FormData(form);
+                                        
+                                        // Disable submit button and show loader
+                                        submitBtn.disabled = true;
+                                        submitBtnText.style.display = 'none';
+                                        submitBtnLoader.style.display = 'inline';
+                                        
+                                        // Hide previous messages
+                                        messageDiv.style.display = 'none';
+                                        messageDiv.className = '';
+                                        messageDiv.textContent = '';
+                                        
+                                        // Submit via AJAX
+                                        fetch(form.action, {
+                                            method: 'POST',
+                                            body: formData,
+                                            headers: {
+                                                'X-Requested-With': 'XMLHttpRequest',
+                                                'Accept': 'application/json'
+                                            }
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            // Show message
+                                            messageDiv.style.display = 'block';
+                                            messageDiv.textContent = data.message;
+                                            
+                                            if (data.success) {
+                                                // Success message
+                                                messageDiv.style.backgroundColor = '#d4edda';
+                                                messageDiv.style.color = '#155724';
+                                                messageDiv.style.border = '1px solid #c3e6cb';
+                                                
+                                                // Reset form
+                                                form.reset();
+                                            } else {
+                                                // Error message
+                                                messageDiv.style.backgroundColor = '#f8d7da';
+                                                messageDiv.style.color = '#721c24';
+                                                messageDiv.style.border = '1px solid #f5c6cb';
+                                            }
+                                        })
+                                        .catch(error => {
+                                            // Show error message
+                                            messageDiv.style.display = 'block';
+                                            messageDiv.style.backgroundColor = '#f8d7da';
+                                            messageDiv.style.color = '#721c24';
+                                            messageDiv.style.border = '1px solid #f5c6cb';
+                                            messageDiv.textContent = 'An error occurred. Please try again later.';
+                                        })
+                                        .finally(() => {
+                                            // Re-enable submit button
+                                            submitBtn.disabled = false;
+                                            submitBtnText.style.display = 'inline';
+                                            submitBtnLoader.style.display = 'none';
+                                        });
+                                    });
+                                </script>
                             </div>
                         </div>
                     </div>
@@ -1031,18 +1249,28 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-4">
-                                <p>© Copyrights 2024. All rights reserved.</p>
+                                <p>{{ isset($footerCopyrightText) ? str_replace('%Y', date('Y'), $footerCopyrightText) : '© Copyrights ' . date('Y') . '. All rights reserved.' }}</p>
                             </div>
                             <div class="col-md-4">
                                 <ul class="social_media">
-                                    <li><a href="#" aria-label="facebook page"><i class="icofont-facebook"></i></a></li>
-                                    <li><a href="#" aria-label="twitter page"><i class="icofont-twitter"></i></a></li>
-                                    <li><a href="#" aria-label="instagram page"><i class="icofont-instagram"></i></a></li>
-                                    <li><a href="#" aria-label="pinterest page"><i class="icofont-pinterest"></i></a></li>
+                                    @if(isset($footerSocialLinks) && $footerSocialLinks->count() > 0)
+                                        @foreach($footerSocialLinks as $socialLink)
+                                            <li>
+                                                <a href="{{ $socialLink->url }}" aria-label="{{ $socialLink->label ?? $socialLink->platform . ' page' }}" target="_blank" rel="noopener noreferrer">
+                                                    <i class="{{ $socialLink->icon_class }}"></i>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li><a href="#" aria-label="facebook page"><i class="icofont-facebook"></i></a></li>
+                                        <li><a href="#" aria-label="twitter page"><i class="icofont-twitter"></i></a></li>
+                                        <li><a href="#" aria-label="instagram page"><i class="icofont-instagram"></i></a></li>
+                                        <li><a href="#" aria-label="pinterest page"><i class="icofont-pinterest"></i></a></li>
+                                    @endif
                                 </ul>
                             </div>
                             <div class="col-md-4">
-                                <p class="developer_text">Design & developed by <a href="#" target="blank">Kalanidhi Themes</a></p>
+                                <p class="developer_text">Design & developed by <a href="http://skylon-it.com/" target="blank">Skylon-IT</a></p>
                             </div>
                         </div>
                     </div>

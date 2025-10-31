@@ -9,14 +9,6 @@
 
 <div class="row">
     <div class="col-md-3 mb-4">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Blog Posts</h5>
-                <h2 class="card-text">{{ $stats['blog_posts'] }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-4">
         <div class="card text-white bg-success">
             <div class="card-body">
                 <h5 class="card-title">Testimonials</h5>
@@ -40,6 +32,38 @@
             </div>
         </div>
     </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Restaurant Logos</h5>
+                <h2 class="card-text">{{ $stats['restaurant_logos'] }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Why Choose Us</h5>
+                <h2 class="card-text">{{ $stats['why_choose_us'] }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Services</h5>
+                <h2 class="card-text">{{ $stats['services'] }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white" style="background-color: #6c757d;">
+            <div class="card-body">
+                <h5 class="card-title">How It Works</h5>
+                <h2 class="card-text">{{ $stats['how_it_works'] }}</h2>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="card">
@@ -59,8 +83,8 @@
                 </a>
             </div>
             <div class="col-md-4 mb-3">
-                <a href="{{ route('admin.blog.index') }}" class="btn btn-outline-info w-100">
-                    <i class="bi bi-file-text me-2"></i>Manage Blog Posts
+                <a href="{{ route('admin.how-it-works.index') }}" class="btn btn-outline-info w-100">
+                    <i class="bi bi-list-ol me-2"></i>Manage How It Works
                 </a>
             </div>
         </div>

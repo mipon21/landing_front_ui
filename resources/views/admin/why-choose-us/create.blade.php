@@ -16,21 +16,6 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label class="form-label">Badge Text</label>
-                        <input type="text" class="form-control" name="badge_text" value="{{ old('badge_text') }}" placeholder="e.g., why use Appiq">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Section Heading <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="heading" value="{{ old('heading') }}" required placeholder="e.g., Why choose us">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Section Description</label>
-                        <textarea class="form-control" name="description" rows="3">{{ old('description') }}</textarea>
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Feature Title <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="title" value="{{ old('title') }}" required placeholder="e.g., Delivery in 30 min">
                     </div>
@@ -45,13 +30,7 @@
                     <div class="mb-3">
                         <label class="form-label">Icon Image</label>
                         <input type="file" class="form-control" name="icon" accept="image/*">
-                        <small class="text-muted">Optional: Upload an icon for this feature</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Feature Image</label>
-                        <input type="file" class="form-control" name="feature_image" accept="image/*">
-                        <small class="text-muted">Optional: Main feature image</small>
+                        <small class="text-muted">Optional: Upload an icon for this feature card</small>
                     </div>
 
                     <div class="mb-3">

@@ -44,10 +44,10 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-2">
-                                    <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-sm btn-warning">
+                                    <a href="{{ route('admin.services.edit', $service->id) }}" class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="{{ route('admin.services.destroy', $service) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                    <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">

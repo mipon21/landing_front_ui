@@ -10,9 +10,6 @@ class HowItWork extends Model
     use HasFactory;
 
     protected $fillable = [
-        'badge_text',
-        'heading',
-        'description',
         'step_image',
         'step_title',
         'step_description',

@@ -8,7 +8,7 @@
     <a href="{{ route('admin.how-it-works.index') }}" class="btn btn-secondary">Back</a>
 </div>
 
-<form action="{{ route('admin.how-it-works.update', $howItWork) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin.how-it-works.update', $howItWork->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -16,21 +16,6 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Badge Text</label>
-                        <input type="text" class="form-control" name="badge_text" value="{{ old('badge_text', $howItWork->badge_text) }}">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Section Heading <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="heading" value="{{ old('heading', $howItWork->heading) }}" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Section Description</label>
-                        <textarea class="form-control" name="description" rows="3">{{ old('description', $howItWork->description) }}</textarea>
-                    </div>
-
                     <div class="mb-3">
                         <label class="form-label">Step Number <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" name="step_number" value="{{ old('step_number', $howItWork->step_number) }}" required min="1" max="99">

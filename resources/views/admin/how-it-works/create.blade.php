@@ -16,21 +16,6 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label class="form-label">Badge Text</label>
-                        <input type="text" class="form-control" name="badge_text" value="{{ old('badge_text') }}" placeholder="e.g., Easy Steps">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Section Heading <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="heading" value="{{ old('heading') }}" required placeholder="e.g., How it Works">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Section Description</label>
-                        <textarea class="form-control" name="description" rows="3">{{ old('description') }}</textarea>
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Step Number <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" name="step_number" value="{{ old('step_number') }}" required min="1" max="99">
                         <small class="text-muted">The step number (1, 2, 3, etc.)</small>

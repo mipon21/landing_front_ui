@@ -294,8 +294,34 @@
         padding-top: 150px;
     }
     .banner_section .app_btn {
+        display: flex !important;
+        flex-direction: row !important;
         justify-content: center;
         margin-bottom: 50px;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+    }
+    /* Center single app button in mobile view */
+    .banner_section .app_btn:has(li:only-child) {
+        justify-content: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    .banner_section .app_btn li:first-child:last-child {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    /* Ensure consistent spacing when both buttons are active */
+    .banner_section .app_btn li:first-child:not(:only-child) {
+        margin-left: 0 !important;
+        margin-right: 15px !important; /* Keep spacing to next button */
+    }
+    .banner_section .app_btn li:last-child:not(:only-child) {
+        margin-left: 15px !important; /* Keep spacing from previous button */
+        margin-right: 0 !important;
     }
     .banner_section .used_app {
         justify-content: center;
@@ -395,6 +421,8 @@
     .banner_section .banner_text {
         margin-top: 0;
         padding: 0 50px;
+        padding-right: 50px !important;
+        padding-left: 50px !important;
     }
     .banner_section .banner_text h1 {
         font-size: 40px;
@@ -800,18 +828,48 @@
     }
     .banner_section .banner_text {
         /*margin-top: -30px;*/
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
     .banner_section .banner_text h1 {
         font-size: 35px;
     }
     .banner_section .app_btn {
+        display: flex !important;
+        flex-direction: row !important;
         justify-content: center;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
     }
-    .banner_section .app_btn li:last-child {
-        margin-left: 0;
+    /* Center single app button in mobile view */
+    .banner_section .app_btn:has(li:only-child) {
+        justify-content: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
+    .banner_section .app_btn li:first-child:last-child {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    /* When both buttons are active: remove outer margins, keep spacing between */
     .banner_section .app_btn li {
         margin: 0 15px;
+    }
+    .banner_section .app_btn li:first-child:not(:only-child) {
+        margin-left: 0 !important;
+        margin-right: 15px !important; /* Keep spacing to next button */
+    }
+    .banner_section .app_btn li:last-child:not(:only-child) {
+        margin-left: 15px !important; /* Keep spacing from previous button */
+        margin-right: 0 !important;
+    }
+    /* Single button: remove all margins */
+    .banner_section .app_btn li:last-child:only-child {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
     .banner_section .app_btn li a {
         padding: 15px 30px;
@@ -1337,6 +1395,35 @@
     .banner_section .app_btn li a img {
         height: 30px;
     }
+    /* Ensure consistent spacing for app buttons */
+    .banner_section .app_btn {
+        display: flex !important;
+        flex-direction: row !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+    }
+    /* Center single app button in mobile view */
+    .banner_section .app_btn:has(li:only-child) {
+        justify-content: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    .banner_section .app_btn li:first-child:last-child {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    /* Ensure equal spacing when both buttons are active */
+    .banner_section .app_btn li:first-child:not(:only-child) {
+        margin-left: 0 !important;
+        margin-right: 15px !important; /* Keep spacing to next button */
+    }
+    .banner_section .app_btn li:last-child:not(:only-child) {
+        margin-left: 15px !important; /* Keep spacing from previous button */
+        margin-right: 0 !important;
+    }
     /* usp section */
     .usp_section .usp_box:after {
         bottom: 0;
@@ -1403,6 +1490,8 @@
     }
     .banner_section .banner_text {
         padding: 0 20px;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
     }
     .banner_section .banner_text p {
         font-size: 16px;
@@ -1410,6 +1499,35 @@
     }
     .banner_section .app_btn li a img {
         height: 25px;
+    }
+    /* Ensure consistent spacing for app buttons */
+    .banner_section .app_btn {
+        display: flex !important;
+        flex-direction: row !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+    }
+    /* Center single app button in mobile view */
+    .banner_section .app_btn:has(li:only-child) {
+        justify-content: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    .banner_section .app_btn li:first-child:last-child {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    /* Ensure equal spacing when both buttons are active */
+    .banner_section .app_btn li:first-child:not(:only-child) {
+        margin-left: 0 !important;
+        margin-right: 15px !important; /* Keep spacing to next button */
+    }
+    .banner_section .app_btn li:last-child:not(:only-child) {
+        margin-left: 15px !important; /* Keep spacing from previous button */
+        margin-right: 0 !important;
     }
     /* services section */
     .service_section.about_service {

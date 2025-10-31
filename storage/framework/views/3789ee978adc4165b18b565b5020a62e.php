@@ -70,14 +70,58 @@
     </div>
 
     <div class="card mb-4">
+        <div class="card-header">Search Section</div>
+        <div class="card-body">
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" name="show_search_section" value="1" id="show_search_section" <?php echo e(old('show_search_section', $hero->show_search_section ?? false) ? 'checked' : ''); ?>>
+                <label class="form-check-label" for="show_search_section">
+                    <strong>Show Search Section on Frontend</strong>
+                </label>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Search Input Placeholder</label>
+                    <input type="text" class="form-control" name="search_section_placeholder" value="<?php echo e(old('search_section_placeholder', $hero->search_section_placeholder ?? 'Enter your location')); ?>" placeholder="Enter your location">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Locate Me Button Text</label>
+                    <input type="text" class="form-control" name="search_section_locate_button_text" value="<?php echo e(old('search_section_locate_button_text', $hero->search_section_locate_button_text ?? 'Locate me')); ?>" placeholder="Locate me">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Search Button Text</label>
+                    <input type="text" class="form-control" name="search_section_button_text" value="<?php echo e(old('search_section_button_text', $hero->search_section_button_text ?? 'Find Food')); ?>" placeholder="Find Food">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Search Button URL</label>
+                    <input type="text" class="form-control" name="search_section_button_url" value="<?php echo e(old('search_section_button_url', $hero->search_section_button_url)); ?>" placeholder="e.g., /search or https://example.com/search">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
         <div class="card-header">App Store Links</div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="show_google_play" value="1" id="show_google_play" <?php echo e(old('show_google_play', $hero->show_google_play ?? true) ? 'checked' : ''); ?>>
+                        <label class="form-check-label" for="show_google_play">
+                            <strong>Show Google Play Button on Frontend</strong>
+                        </label>
+                    </div>
                     <label class="form-label">Google Play URL</label>
                     <input type="url" class="form-control" name="google_play_url" value="<?php echo e(old('google_play_url', $hero->google_play_url)); ?>">
                 </div>
                 <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="show_app_store" value="1" id="show_app_store" <?php echo e(old('show_app_store', $hero->show_app_store ?? true) ? 'checked' : ''); ?>>
+                        <label class="form-check-label" for="show_app_store">
+                            <strong>Show App Store Button on Frontend</strong>
+                        </label>
+                    </div>
                     <label class="form-label">App Store URL</label>
                     <input type="url" class="form-control" name="app_store_url" value="<?php echo e(old('app_store_url', $hero->app_store_url)); ?>">
                 </div>

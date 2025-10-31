@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\RestaurantLogo;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,7 +13,11 @@ class RestaurantLogoController extends Controller
     public function index()
     {
         $logos = RestaurantLogo::orderBy('sort_order')->get();
-        return view('admin.restaurant-logos.index', compact('logos'));
+        $registerButton = [
+            'text' => SiteSetting::getValue('restaurant_section_button_text', 'Register Your Restaurant'),
+            'url' => SiteSetting::getValue('restaurant_section_button_url', '#'),
+        ];
+        return view('admin.restaurant-logos.index', compact('logos', 'registerButton'));
     }
 
     public function create()
@@ -70,5 +75,17 @@ class RestaurantLogoController extends Controller
 
         return redirect()->route('admin.restaurant-logos.index')->with('success', 'Restaurant logo deleted successfully!');
     }
-}
 
+    public function updateButton(Request $request)
+    {
+        $validated = $request->validate([
+            'button_text' => 'required|string|max:255',
+            'button_url' => 'required|url|max:255',
+        ]);
+
+        SiteSetting::setValue('restaurant_section_button_text', $validated['button_text'], 'text', 'Register button text below restaurant logos section');
+        SiteSetting::setValue('restaurant_section_button_url', $validated['button_url'], 'url', 'Register button URL below restaurant logos section');
+
+        return redirect()->route('admin.restaurant-logos.index')->with('success', 'Register button updated successfully!');
+    }
+}

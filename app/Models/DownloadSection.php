@@ -16,17 +16,22 @@ class DownloadSection extends Model
         'promo_text',
         'google_play_url',
         'app_store_url',
+        'show_google_play',
+        'show_app_store',
         'button_text',
         'button_url',
         'left_image',
         'right_image',
         'mobile_image',
+        'background_image',
         'section_type',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'show_google_play' => 'boolean',
+        'show_app_store' => 'boolean',
     ];
 
     public function scopeActive($query)
@@ -42,6 +47,11 @@ class DownloadSection extends Model
     public function scopeRegister($query)
     {
         return $query->where('section_type', 'register');
+    }
+
+    public function scopeDeliveryman($query)
+    {
+        return $query->where('section_type', 'deliveryman');
     }
 }
 

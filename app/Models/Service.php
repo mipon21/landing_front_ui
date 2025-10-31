@@ -40,5 +40,10 @@ class Service extends Model
     {
         return $query->where('type', 'customer');
     }
+
+    public function scopeDeliveryman($query)
+    {
+        return $query->where('type', 'deliveryman');
+    }
 }
 
