@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ $siteDescription }}">
-    <title>{{ $siteName }}</title>
+    <meta name="description" content="<?php echo e($siteDescription); ?>">
+    <title><?php echo e($siteName); ?></title>
     
-    @if($siteFavicon)
-        @php
+    <?php if($siteFavicon): ?>
+        <?php
             // Ensure the path doesn't have duplicate storage/ prefix
             $faviconPath = str_replace('storage/', '', $siteFavicon);
             $faviconUrl = asset('storage/' . $faviconPath);
@@ -28,27 +28,27 @@
                 'gif' => 'image/gif',
             ];
             $mimeType = $mimeTypes[$extension] ?? 'image/x-icon';
-        @endphp
-        <link rel="icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}?v={{ $faviconTimestamp }}">
-        <link rel="shortcut icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}?v={{ $faviconTimestamp }}">
-        <link rel="apple-touch-icon" href="{{ $faviconUrl }}?v={{ $faviconTimestamp }}">
-    @else
-        <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}" type="image/x-icon">
-        <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
-    @endif
+        ?>
+        <link rel="icon" type="<?php echo e($mimeType); ?>" href="<?php echo e($faviconUrl); ?>?v=<?php echo e($faviconTimestamp); ?>">
+        <link rel="shortcut icon" type="<?php echo e($mimeType); ?>" href="<?php echo e($faviconUrl); ?>?v=<?php echo e($faviconTimestamp); ?>">
+        <link rel="apple-touch-icon" href="<?php echo e($faviconUrl); ?>?v=<?php echo e($faviconTimestamp); ?>">
+    <?php else: ?>
+        <link rel="shortcut icon" href="<?php echo e(asset('images/favicon.webp')); ?>" type="image/x-icon">
+        <link rel="icon" type="image/webp" href="<?php echo e(asset('images/favicon.webp')); ?>">
+    <?php endif; ?>
 
     <!-- icofont-css-link -->
-    <link rel="stylesheet" href="{{ asset('css/icofont.min.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/icofont.min.css')); ?>">
     <!-- Owl-Carosal-Style-link -->
-    <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/owl.carousel.min.css')); ?>">
     <!-- Bootstrap-Style-link -->
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/bootstrap.min.css')); ?>">
     <!-- Aos-Style-link -->
-    <link rel="stylesheet" href="{{ asset('css/aos.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/aos.css')); ?>">
     <!-- Coustome-Style-link -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
     <!-- Responsive-Style-link -->
-    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/responsive.css')); ?>">
     <!-- font 1 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,20 +65,20 @@
         <div id="loader"></div>
     </div>
 
-    @include('partials.header')
+    <?php echo $__env->make('partials.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <!-- Banner-Section-Start -->
     <section class="banner_section" id="home_sec">
         <!-- hero bg -->
-        @if($hero && $hero->background_image)
+        <?php if($hero && $hero->background_image): ?>
         <div class="hero_bg">
-            <img src="{{ asset('storage/' . $hero->background_image) }}" alt="image">
+            <img src="<?php echo e(asset('storage/' . $hero->background_image)); ?>" alt="image">
         </div>
-        @else
+        <?php else: ?>
         <div class="hero_bg">
-            <img src="{{ asset('images/hero_bg.webp') }}" alt="image">
+            <img src="<?php echo e(asset('images/hero_bg.webp')); ?>" alt="image">
         </div>
-        @endif
+        <?php endif; ?>
 
         <div class="container">
             <div class="row">
@@ -90,71 +90,75 @@
                         </div>
                         <!-- h1 -->
                         <h1>
-                            @if($hero && $hero->heading)
-                                {!! $hero->heading !!}
-                            @else
+                            <?php if($hero && $hero->heading): ?>
+                                <?php echo $hero->heading; ?>
+
+                            <?php else: ?>
                                 Fast & best <span> food delivery </span> services in your town
-                            @endif
+                            <?php endif; ?>
                         </h1>
                         <!-- p -->
                         <p>
-                            @if($hero && $hero->description)
-                                {{ $hero->description }}
-                            @else
+                            <?php if($hero && $hero->description): ?>
+                                <?php echo e($hero->description); ?>
+
+                            <?php else: ?>
                                 We commit to delivering your food to you within 30 minutes. if we would fail, we will give the food free.
-                            @endif
+                            <?php endif; ?>
                         </p>
                     </div>
 
                     <!-- users -->
                     <div class="used_app">
                         <ul>
-                            @if($hero && $hero->user_avatars && count($hero->user_avatars) > 0)
-                                @foreach($hero->user_avatars as $avatar)
-                                    <li><img src="{{ asset('images/' . $avatar) }}" alt="image"></li>
-                                @endforeach
-                            @else
-                                <li><img src="{{ asset('images/banavt1.webp') }}" alt="image"></li>
-                                <li><img src="{{ asset('images/banavt2.webp') }}" alt="image"></li>
-                                <li><img src="{{ asset('images/banavt3.webp') }}" alt="image"></li>
-                            @endif
-                            @if($hero && $hero->video_url)
+                            <?php if($hero && $hero->user_avatars && count($hero->user_avatars) > 0): ?>
+                                <?php $__currentLoopData = $hero->user_avatars; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $avatar): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <li><img src="<?php echo e(asset('images/' . $avatar)); ?>" alt="image"></li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
+                                <li><img src="<?php echo e(asset('images/banavt1.webp')); ?>" alt="image"></li>
+                                <li><img src="<?php echo e(asset('images/banavt2.webp')); ?>" alt="image"></li>
+                                <li><img src="<?php echo e(asset('images/banavt3.webp')); ?>" alt="image"></li>
+                            <?php endif; ?>
+                            <?php if($hero && $hero->video_url): ?>
                             <li>
-                                <a href="#" class="popup-youtube play-button" data-url="{{ $hero->video_url }}" data-toggle="modal" data-target="#myModal">
-                                    <img src="{{ asset('images/play.webp') }}" alt="img">
+                                <a href="#" class="popup-youtube play-button" data-url="<?php echo e($hero->video_url); ?>" data-toggle="modal" data-target="#myModal">
+                                    <img src="<?php echo e(asset('images/play.webp')); ?>" alt="img">
                                 </a>
                             </li>
-                            @endif
+                            <?php endif; ?>
                         </ul>
                         <p>
-                            @if($hero && $hero->active_users_text)
-                                {{ $hero->active_users_text }}
-                            @else
+                            <?php if($hero && $hero->active_users_text): ?>
+                                <?php echo e($hero->active_users_text); ?>
+
+                            <?php else: ?>
                                 25k + Active users
-                            @endif
+                            <?php endif; ?>
                             <br>
                             <span>
                                 <i class="icofont-star"></i>
-                                @if($hero && $hero->rating_text)
-                                    {{ $hero->rating_text }}
-                                @else
+                                <?php if($hero && $hero->rating_text): ?>
+                                    <?php echo e($hero->rating_text); ?>
+
+                                <?php else: ?>
                                     4.5 / 5.0 ( 20k + Reviews)
-                                @endif
+                                <?php endif; ?>
                             </span>
                         </p>
                     </div>
 
                     <!-- Search Section -->
-                    @if($hero && ($hero->show_search_section ?? false))
+                    <?php if($hero && ($hero->show_search_section ?? false)): ?>
                     <div class="hero_search_section">
-                        <form action="{{ $hero->search_section_button_url ?? '#' }}" method="GET" class="hero_search_form">
+                        <form action="<?php echo e($hero->search_section_button_url ?? '#'); ?>" method="GET" class="hero_search_form">
                             <div class="search_input_wrapper">
                                 <input 
                                     type="text" 
                                     name="location" 
                                     id="hero_location_input"
                                     class="form-control hero_location_input" 
-                                    placeholder="{{ $hero->search_section_placeholder ?? 'Enter your location' }}"
+                                    placeholder="<?php echo e($hero->search_section_placeholder ?? 'Enter your location'); ?>"
                                 >
                                 <button 
                                     type="button" 
@@ -162,14 +166,15 @@
                                     onclick="getUserLocation()"
                                 >
                                     <i class="icofont-location-pin"></i>
-                                    <span class="locate_me_text">{{ $hero->search_section_locate_button_text ?? 'Locate me' }}</span>
+                                    <span class="locate_me_text"><?php echo e($hero->search_section_locate_button_text ?? 'Locate me'); ?></span>
                                 </button>
                             </div>
                             <button 
                                 type="submit" 
                                 class="btn find_food_btn"
                             >
-                                {{ $hero->search_section_button_text ?? 'Find Food' }}
+                                <?php echo e($hero->search_section_button_text ?? 'Find Food'); ?>
+
                             </button>
                         </form>
                         <script>
@@ -252,43 +257,43 @@
                             }
                         </script>
                     </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- app buttons -->
                     <ul class="app_btn">
-                        @if($hero && ($hero->show_google_play ?? true))
+                        <?php if($hero && ($hero->show_google_play ?? true)): ?>
                         <li>
-                            <a href="{{ $hero && $hero->google_play_url ? $hero->google_play_url : '#' }}">
-                                @if($hero && $hero->google_play_image)
-                                    <img class="blue_img" src="{{ asset('storage/' . $hero->google_play_image) }}" alt="image">
-                                @else
-                                    <img class="blue_img" src="{{ asset('images/googleplay.webp') }}" alt="image">
-                                @endif
+                            <a href="<?php echo e($hero && $hero->google_play_url ? $hero->google_play_url : '#'); ?>">
+                                <?php if($hero && $hero->google_play_image): ?>
+                                    <img class="blue_img" src="<?php echo e(asset('storage/' . $hero->google_play_image)); ?>" alt="image">
+                                <?php else: ?>
+                                    <img class="blue_img" src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image">
+                                <?php endif; ?>
                             </a>
                         </li>
-                        @endif
-                        @if($hero && ($hero->show_app_store ?? true))
+                        <?php endif; ?>
+                        <?php if($hero && ($hero->show_app_store ?? true)): ?>
                         <li>
-                            <a href="{{ $hero && $hero->app_store_url ? $hero->app_store_url : '#' }}">
-                                @if($hero && $hero->app_store_image)
-                                    <img class="blue_img" src="{{ asset('storage/' . $hero->app_store_image) }}" alt="image">
-                                @else
-                                    <img class="blue_img" src="{{ asset('images/appstorebtn.webp') }}" alt="image">
-                                @endif
+                            <a href="<?php echo e($hero && $hero->app_store_url ? $hero->app_store_url : '#'); ?>">
+                                <?php if($hero && $hero->app_store_image): ?>
+                                    <img class="blue_img" src="<?php echo e(asset('storage/' . $hero->app_store_image)); ?>" alt="image">
+                                <?php else: ?>
+                                    <img class="blue_img" src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image">
+                                <?php endif; ?>
                             </a>
                         </li>
-                        @endif
+                        <?php endif; ?>
                     </ul>
                 </div>
 
                 <!-- banner image start -->
                 <div class="col-lg-6 col-md-12">
                     <div class="hero_img">
-                        @if($hero && $hero->hero_image)
-                            <img src="{{ asset('storage/' . $hero->hero_image) }}" alt="image">
-                        @else
-                            <img src="{{ asset('images/hero_image.webp') }}" alt="image">
-                        @endif
+                        <?php if($hero && $hero->hero_image): ?>
+                            <img src="<?php echo e(asset('storage/' . $hero->hero_image)); ?>" alt="image">
+                        <?php else: ?>
+                            <img src="<?php echo e(asset('images/hero_image.webp')); ?>" alt="image">
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -305,28 +310,28 @@
             <div class="inner_sec" id="counter">
                 <div class="container">
                     <div class="row">
-                        @forelse($statistics as $stat)
+                        <?php $__empty_1 = true; $__currentLoopData = $statistics; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="usp_box">
                                     <div class="usp_icon">
-                                        @if($stat->icon)
-                                            <img src="{{ asset('storage/' . $stat->icon) }}" alt="image">
-                                        @else
-                                            <img src="{{ asset('images/usp1.webp') }}" alt="image">
-                                        @endif
+                                        <?php if($stat->icon): ?>
+                                            <img src="<?php echo e(asset('storage/' . $stat->icon)); ?>" alt="image">
+                                        <?php else: ?>
+                                            <img src="<?php echo e(asset('images/usp1.webp')); ?>" alt="image">
+                                        <?php endif; ?>
                                     </div>
                                     <div class="usp_text">
-                                        <span class="counter-value" data-count="{{ $stat->value }}">{{ $stat->value }}</span>
-                                        <span>{{ $stat->suffix }}</span>
-                                        <p>{{ $stat->label }}</p>
+                                        <span class="counter-value" data-count="<?php echo e($stat->value); ?>"><?php echo e($stat->value); ?></span>
+                                        <span><?php echo e($stat->suffix); ?></span>
+                                        <p><?php echo e($stat->label); ?></p>
                                     </div>
                                 </div>
                             </div>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <!-- Default static statistics if none in database -->
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="usp_box">
-                                    <div class="usp_icon"><img src="{{ asset('images/usp1.webp') }}" alt="image"></div>
+                                    <div class="usp_icon"><img src="<?php echo e(asset('images/usp1.webp')); ?>" alt="image"></div>
                                     <div class="usp_text">
                                         <span class="counter-value" data-count="5000">5000</span><span>+</span>
                                         <p>Happy Users</p>
@@ -335,14 +340,14 @@
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="usp_box">
-                                    <div class="usp_icon"><img src="{{ asset('images/usp2.webp') }}" alt="image"></div>
+                                    <div class="usp_icon"><img src="<?php echo e(asset('images/usp2.webp')); ?>" alt="image"></div>
                                     <div class="usp_text">
                                         <span class="counter-value" data-count="1879">1879</span><span>+</span>
                                         <p>Positive Reviews</p>
                                     </div>
                                 </div>
                             </div>
-                        @endforelse
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -357,28 +362,28 @@
 
                 <div class="company_logos">
                     <div id="company_slider" class="owl-carousel owl-theme">
-                        @forelse($restaurantLogos as $logo)
+                        <?php $__empty_1 = true; $__currentLoopData = $restaurantLogos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $logo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <div class="item">
                                 <div class="logo">
-                                    <img src="{{ asset('storage/' . $logo->logo_image) }}" alt="{{ $logo->alt_text ?? 'Restaurant Logo' }}">
+                                    <img src="<?php echo e(asset('storage/' . $logo->logo_image)); ?>" alt="<?php echo e($logo->alt_text ?? 'Restaurant Logo'); ?>">
                                 </div>
                             </div>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <!-- Default logos if none in database -->
-                            @for($i = 1; $i <= 8; $i++)
+                            <?php for($i = 1; $i <= 8; $i++): ?>
                                 <div class="item">
                                     <div class="logo">
-                                        <img src="{{ asset('images/res' . $i . '.webp') }}" alt="Restaurant Logo">
+                                        <img src="<?php echo e(asset('images/res' . $i . '.webp')); ?>" alt="Restaurant Logo">
                                     </div>
                                 </div>
-                            @endfor
-                        @endforelse
+                            <?php endfor; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
 
                 <div class="ctr_cta">
                     <div class="btn_block">
-                        <a href="{{ $restaurantRegisterButton['url'] }}" class="btn puprple_btn ml-0">{{ $restaurantRegisterButton['text'] }}</a>
+                        <a href="<?php echo e($restaurantRegisterButton['url']); ?>" class="btn puprple_btn ml-0"><?php echo e($restaurantRegisterButton['text']); ?></a>
                     </div>
                 </div>
             </div>
@@ -391,66 +396,66 @@
                     <div class="row">
                         <!-- section title -->
                         <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                            @if($whyChooseUsSettings['badge_text'])
-                                <span class="title_badge">{{ $whyChooseUsSettings['badge_text'] }}</span>
-                            @else
+                            <?php if($whyChooseUsSettings['badge_text']): ?>
+                                <span class="title_badge"><?php echo e($whyChooseUsSettings['badge_text']); ?></span>
+                            <?php else: ?>
                                 <span class="title_badge">why use Appiq</span>
-                            @endif
-                            <h2>{{ $whyChooseUsSettings['heading'] }}</h2>
-                            <p>{{ $whyChooseUsSettings['description'] }}</p>
+                            <?php endif; ?>
+                            <h2><?php echo e($whyChooseUsSettings['heading']); ?></h2>
+                            <p><?php echo e($whyChooseUsSettings['description']); ?></p>
                         </div>
 
                         <div class="dtat_box">
                             <div class="col-lg-6 col-md-12">
                                 <div class="why_new_left_data">
-                                    @forelse($whyChooseUs->take(3) as $feature)
+                                    <?php $__empty_1 = true; $__currentLoopData = $whyChooseUs->take(3); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <div class="why_data_block" data-aos="fade-right" data-aos-duration="1500">
                                             <div class="icon">
-                                                @if($feature->icon)
-                                                    <img src="{{ asset('storage/' . $feature->icon) }}" alt="{{ $feature->title }}">
-                                                @else
-                                                    <img src="{{ asset('images/whyicon' . (($loop->index % 3) + 1) . '.webp') }}" alt="image">
-                                                @endif
+                                                <?php if($feature->icon): ?>
+                                                    <img src="<?php echo e(asset('storage/' . $feature->icon)); ?>" alt="<?php echo e($feature->title); ?>">
+                                                <?php else: ?>
+                                                    <img src="<?php echo e(asset('images/whyicon' . (($loop->index % 3) + 1) . '.webp')); ?>" alt="image">
+                                                <?php endif; ?>
                                             </div>
                                             <div class="text">
-                                                <h6>{{ $feature->title }}</h6>
-                                                <p>{{ $feature->content }}</p>
+                                                <h6><?php echo e($feature->title); ?></h6>
+                                                <p><?php echo e($feature->content); ?></p>
                                             </div>
                                         </div>
-                                    @empty
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <!-- Default features -->
                                         <div class="why_data_block" data-aos="fade-right" data-aos-duration="1500">
-                                            <div class="icon"><img src="{{ asset('images/whyicon1.webp') }}" alt="image"></div>
+                                            <div class="icon"><img src="<?php echo e(asset('images/whyicon1.webp')); ?>" alt="image"></div>
                                             <div class="text">
                                                 <h6>Delivery in 30 min</h6>
                                                 <p>Get your favorite meals delivered fresh and fast to your door in just 30 minutes! Enjoy the convenience!</p>
                                             </div>
                                         </div>
                                         <div class="why_data_block" data-aos="fade-right" data-aos-duration="1500">
-                                            <div class="icon"><img src="{{ asset('images/whyicon2.webp') }}" alt="image"></div>
+                                            <div class="icon"><img src="<?php echo e(asset('images/whyicon2.webp')); ?>" alt="image"></div>
                                             <div class="text">
                                                 <h6>Quality Food</h6>
                                                 <p>Enjoy premium meals from top local restaurants, expertly crafted to satisfy your taste and elevate your dining experience!</p>
                                             </div>
                                         </div>
                                         <div class="why_data_block" data-aos="fade-right" data-aos-duration="1500">
-                                            <div class="icon"><img src="{{ asset('images/whyicon3.webp') }}" alt="image"></div>
+                                            <div class="icon"><img src="<?php echo e(asset('images/whyicon3.webp')); ?>" alt="image"></div>
                                             <div class="text">
                                                 <h6>Track Live Map</h6>
                                                 <p>Easily track your order in real-time with our live map feature, ultimate convenience and keeping you updated every step of the way!</p>
                                             </div>
                                         </div>
-                                    @endforelse
+                                    <?php endif; ?>
                                 </div>
                             </div>
 
                             <div class="col-lg-6 col-md-12">
                                 <div class="why_us_new_img" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                                    @if($whyChooseUsFeatureImage)
-                                        <img src="{{ asset('storage/' . $whyChooseUsFeatureImage) }}" alt="image">
-                                    @else
-                                        <img src="{{ asset('images/features_frame.webp') }}" alt="image">
-                                    @endif
+                                    <?php if($whyChooseUsFeatureImage): ?>
+                                        <img src="<?php echo e(asset('storage/' . $whyChooseUsFeatureImage)); ?>" alt="image">
+                                    <?php else: ?>
+                                        <img src="<?php echo e(asset('images/features_frame.webp')); ?>" alt="image">
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -472,42 +477,42 @@
 
             <div class="dish_slider" data-aos="fade-in" data-aos-duration="1500">
                 <div class="owl-carousel owl-theme" id="about_slider">
-                    @forelse($dishes as $dish)
+                    <?php $__empty_1 = true; $__currentLoopData = $dishes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dish): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <div class="item">
                             <div class="dish_slides">
-                                <img src="{{ asset('storage/' . $dish->image) }}" alt="{{ $dish->name ?? 'Dish' }}">
+                                <img src="<?php echo e(asset('storage/' . $dish->image)); ?>" alt="<?php echo e($dish->name ?? 'Dish'); ?>">
                             </div>
                         </div>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <!-- Default dishes if none in database -->
-                        @for($i = 1; $i <= 10; $i++)
+                        <?php for($i = 1; $i <= 10; $i++): ?>
                             <div class="item">
                                 <div class="dish_slides">
-                                    <img src="{{ asset('images/dish' . $i . '.webp') }}" alt="Dish">
+                                    <img src="<?php echo e(asset('images/dish' . $i . '.webp')); ?>" alt="Dish">
                                 </div>
                             </div>
-                        @endfor
-                    @endforelse
+                        <?php endfor; ?>
+                    <?php endif; ?>
                 </div>
             </div>
 
             <div class="ctr_app_btn_block">
                 <p><strong>Free Food Delivery On Your First Orders!</strong></p>
                 <ul class="app_btn">
-                    @if($dishesSectionButtons['show_google_play'])
+                    <?php if($dishesSectionButtons['show_google_play']): ?>
                     <li>
-                        <a href="{{ $dishesSectionButtons['google_play_url'] ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#') }}">
-                            <img class="blue_img" src="{{ asset('images/googleplay.webp') }}" alt="image">
+                        <a href="<?php echo e($dishesSectionButtons['google_play_url'] ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#')); ?>">
+                            <img class="blue_img" src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image">
                         </a>
                     </li>
-                    @endif
-                    @if($dishesSectionButtons['show_app_store'])
+                    <?php endif; ?>
+                    <?php if($dishesSectionButtons['show_app_store']): ?>
                     <li>
-                        <a href="{{ $dishesSectionButtons['app_store_url'] ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#') }}">
-                            <img class="blue_img" src="{{ asset('images/appstorebtn.webp') }}" alt="image">
+                        <a href="<?php echo e($dishesSectionButtons['app_store_url'] ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#')); ?>">
+                            <img class="blue_img" src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image">
                         </a>
                     </li>
-                    @endif
+                    <?php endif; ?>
                 </ul>
             </div>
         </section>
@@ -521,33 +526,33 @@
                     <p>Users enjoy a seamless food ordering experience with fast delivery and great choices, restaurants get more orders and wider visibility without extra hassle, and delivery partners earn reliably while navigating flexible schedules. Together, we make food delivery smarter, faster, and more rewarding for all.</p>
                 </div>
 
-                @php
+                <?php
                     $restaurantService = $services->where('type', 'restaurant')->first();
                     $customerService = $services->where('type', 'customer')->first();
                     $deliverymanService = $services->where('type', 'deliveryman')->first();
-                @endphp
+                ?>
 
                 <div class="row service_blocks flex-row-reverse">
                     <div class="col-md-6">
                         <div class="service_text right_side" data-aos="fade-up" data-aos-duration="1500">
-                            @if($restaurantService)
-                                @if($restaurantService->badge_text)
-                                    <span class="title_badge">{{ $restaurantService->badge_text }}</span>
-                                @else
+                            <?php if($restaurantService): ?>
+                                <?php if($restaurantService->badge_text): ?>
+                                    <span class="title_badge"><?php echo e($restaurantService->badge_text); ?></span>
+                                <?php else: ?>
                                     <span class="title_badge">for restaurant</span>
-                                @endif
-                                <h3>{{ $restaurantService->heading }}</h3>
-                                <p>{{ $restaurantService->description }}</p>
-                                @if($restaurantService->features && is_array($restaurantService->features))
+                                <?php endif; ?>
+                                <h3><?php echo e($restaurantService->heading); ?></h3>
+                                <p><?php echo e($restaurantService->description); ?></p>
+                                <?php if($restaurantService->features && is_array($restaurantService->features)): ?>
                                     <ul class="design_block">
-                                        @foreach($restaurantService->features as $feature)
+                                        <?php $__currentLoopData = $restaurantService->features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <li data-aos="fade-up" data-aos-duration="1500">
-                                                <h6>{{ $feature['title'] ?? '' }}</h6>
-                                                <p>{{ $feature['description'] ?? '' }}</p>
+                                                <h6><?php echo e($feature['title'] ?? ''); ?></h6>
+                                                <p><?php echo e($feature['description'] ?? ''); ?></p>
                                             </li>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </ul>
-                                @else
+                                <?php else: ?>
                                     <ul class="design_block">
                                         <li data-aos="fade-up" data-aos-duration="1500">
                                             <h6>Handling of orders</h6>
@@ -558,11 +563,11 @@
                                             <p>Dummy text of the printing and typesetting industr lorem Ipsum is simply.</p>
                                         </li>
                                     </ul>
-                                @endif
+                                <?php endif; ?>
                                 <div class="btn_block">
-                                    <a href="{{ $restaurantService->button_url ?? '#' }}" class="btn puprple_btn ml-0">{{ $restaurantService->button_text ?? 'Register Your Restaurant' }}</a>
+                                    <a href="<?php echo e($restaurantService->button_url ?? '#'); ?>" class="btn puprple_btn ml-0"><?php echo e($restaurantService->button_text ?? 'Register Your Restaurant'); ?></a>
                                 </div>
-                            @else
+                            <?php else: ?>
                                 <span class="title_badge">for restaurant</span>
                                 <h3>Effortless management of restaurant operations.</h3>
                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry lorem Ipsum has been the industrys standard dummytext.</p>
@@ -579,17 +584,17 @@
                                 <div class="btn_block">
                                     <a href="#" class="btn puprple_btn ml-0">Register Your Restaurant</a>
                                 </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="inner_block dark_bg rotate_right" data-aos="fade-up" data-aos-duration="1500">
                             <div class="img">
-                                @if($restaurantService && $restaurantService->image)
-                                    <img src="{{ asset('storage/' . $restaurantService->image) }}" alt="image">
-                                @else
-                                    <img src="{{ asset('images/for_restaurant.webp') }}" alt="image">
-                                @endif
+                                <?php if($restaurantService && $restaurantService->image): ?>
+                                    <img src="<?php echo e(asset('storage/' . $restaurantService->image)); ?>" alt="image">
+                                <?php else: ?>
+                                    <img src="<?php echo e(asset('images/for_restaurant.webp')); ?>" alt="image">
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -598,24 +603,24 @@
                 <div class="row service_blocks no_bottom_padding">
                     <div class="col-md-6">
                         <div class="service_text" data-aos="fade-up" data-aos-duration="1500">
-                            @if($customerService)
-                                @if($customerService->badge_text)
-                                    <span class="title_badge">{{ $customerService->badge_text }}</span>
-                                @else
+                            <?php if($customerService): ?>
+                                <?php if($customerService->badge_text): ?>
+                                    <span class="title_badge"><?php echo e($customerService->badge_text); ?></span>
+                                <?php else: ?>
                                     <span class="title_badge">for customer</span>
-                                @endif
-                                <h3>{{ $customerService->heading }}</h3>
-                                <p>{{ $customerService->description }}</p>
-                                @if($customerService->features && is_array($customerService->features))
+                                <?php endif; ?>
+                                <h3><?php echo e($customerService->heading); ?></h3>
+                                <p><?php echo e($customerService->description); ?></p>
+                                <?php if($customerService->features && is_array($customerService->features)): ?>
                                     <ul class="design_block">
-                                        @foreach($customerService->features as $feature)
+                                        <?php $__currentLoopData = $customerService->features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <li data-aos="fade-up" data-aos-duration="1500">
-                                                <h6>{{ $feature['title'] ?? '' }}</h6>
-                                                <p>{{ $feature['description'] ?? '' }}</p>
+                                                <h6><?php echo e($feature['title'] ?? ''); ?></h6>
+                                                <p><?php echo e($feature['description'] ?? ''); ?></p>
                                             </li>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </ul>
-                                @else
+                                <?php else: ?>
                                     <ul class="design_block">
                                         <li data-aos="fade-up" data-aos-duration="1500">
                                             <h6>Delivery within 3 min</h6>
@@ -626,11 +631,11 @@
                                             <p>Lorem Ipsum is simply dummy text of the printing and typesetting industr.</p>
                                         </li>
                                     </ul>
-                                @endif
+                                <?php endif; ?>
                                 <div class="btn_block">
-                                    <a href="{{ $customerService->button_url ?? '#' }}" class="btn puprple_btn ml-0">{{ $customerService->button_text ?? 'Download App' }}</a>
+                                    <a href="<?php echo e($customerService->button_url ?? '#'); ?>" class="btn puprple_btn ml-0"><?php echo e($customerService->button_text ?? 'Download App'); ?></a>
                                 </div>
-                            @else
+                            <?php else: ?>
                                 <span class="title_badge">for customer</span>
                                 <h3>Seamless ordering process from app</h3>
                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry lorem Ipsum has been the industrys standard dummytext.</p>
@@ -647,43 +652,43 @@
                                 <div class="btn_block">
                                     <a href="#" class="btn puprple_btn ml-0">Download App</a>
                                 </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="inner_block" data-aos="fade-up" data-aos-duration="1500">
                             <div class="img">
-                                @if($customerService && $customerService->image)
-                                    <img src="{{ asset('storage/' . $customerService->image) }}" alt="image">
-                                @else
-                                    <img src="{{ asset('images/for_customer.webp') }}" alt="image">
-                                @endif
+                                <?php if($customerService && $customerService->image): ?>
+                                    <img src="<?php echo e(asset('storage/' . $customerService->image)); ?>" alt="image">
+                                <?php else: ?>
+                                    <img src="<?php echo e(asset('images/for_customer.webp')); ?>" alt="image">
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                @if($deliverymanService)
+                <?php if($deliverymanService): ?>
                 <div class="row service_blocks flex-row-reverse no_bottom_padding">
                     <div class="col-md-6">
                         <div class="service_text right_side" data-aos="fade-up" data-aos-duration="1500">
-                            @if($deliverymanService->badge_text)
-                                <span class="title_badge">{{ $deliverymanService->badge_text }}</span>
-                            @else
+                            <?php if($deliverymanService->badge_text): ?>
+                                <span class="title_badge"><?php echo e($deliverymanService->badge_text); ?></span>
+                            <?php else: ?>
                                 <span class="title_badge">for deliveryman</span>
-                            @endif
-                            <h3>{{ $deliverymanService->heading }}</h3>
-                            <p>{{ $deliverymanService->description }}</p>
-                            @if($deliverymanService->features && is_array($deliverymanService->features))
+                            <?php endif; ?>
+                            <h3><?php echo e($deliverymanService->heading); ?></h3>
+                            <p><?php echo e($deliverymanService->description); ?></p>
+                            <?php if($deliverymanService->features && is_array($deliverymanService->features)): ?>
                                 <ul class="design_block">
-                                    @foreach($deliverymanService->features as $feature)
+                                    <?php $__currentLoopData = $deliverymanService->features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <li data-aos="fade-up" data-aos-duration="1500">
-                                            <h6>{{ $feature['title'] ?? '' }}</h6>
-                                            <p>{{ $feature['description'] ?? '' }}</p>
+                                            <h6><?php echo e($feature['title'] ?? ''); ?></h6>
+                                            <p><?php echo e($feature['description'] ?? ''); ?></p>
                                         </li>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </ul>
-                            @else
+                            <?php else: ?>
                                 <ul class="design_block">
                                     <li data-aos="fade-up" data-aos-duration="1500">
                                         <h6>Earn money on your schedule</h6>
@@ -694,25 +699,25 @@
                                         <p>Dummy text of the printing and typesetting industr lorem Ipsum is simply.</p>
                                     </li>
                                 </ul>
-                            @endif
+                            <?php endif; ?>
                             <div class="btn_block">
-                                <a href="{{ $deliverymanService->button_url ?? '#' }}" class="btn puprple_btn ml-0">{{ $deliverymanService->button_text ?? 'Join As Deliveryman' }}</a>
+                                <a href="<?php echo e($deliverymanService->button_url ?? '#'); ?>" class="btn puprple_btn ml-0"><?php echo e($deliverymanService->button_text ?? 'Join As Deliveryman'); ?></a>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="inner_block dark_bg rotate_right" data-aos="fade-up" data-aos-duration="1500">
                             <div class="img">
-                                @if($deliverymanService->image)
-                                    <img src="{{ asset('storage/' . $deliverymanService->image) }}" alt="image">
-                                @else
-                                    <img src="{{ asset('images/for_restaurant.webp') }}" alt="image">
-                                @endif
+                                <?php if($deliverymanService->image): ?>
+                                    <img src="<?php echo e(asset('storage/' . $deliverymanService->image)); ?>" alt="image">
+                                <?php else: ?>
+                                    <img src="<?php echo e(asset('images/for_restaurant.webp')); ?>" alt="image">
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
-                @endif
+                <?php endif; ?>
             </div>
         </section>
         <!-- Service Section End -->
@@ -725,16 +730,18 @@
 
                 <div class="container">
                     <div class="section_title">
-                        @if($howItWorksSettings['badge_text'])
-                            <span class="title_badge">{{ $howItWorksSettings['badge_text'] }}</span>
-                        @else
+                        <?php if($howItWorksSettings['badge_text']): ?>
+                            <span class="title_badge"><?php echo e($howItWorksSettings['badge_text']); ?></span>
+                        <?php else: ?>
                             <span class="title_badge">Easy Steps</span>
-                        @endif
+                        <?php endif; ?>
                         <h2>
-                            {{ $howItWorksSettings['heading'] ?: 'How it Works' }}
+                            <?php echo e($howItWorksSettings['heading'] ?: 'How it Works'); ?>
+
                         </h2>
                         <p>
-                            {{ $howItWorksSettings['description'] ?: 'Lorem Ipsum is simply dummy text of the printing indus orem Ipsum has been the industrys standard dummy text ever since.' }}
+                            <?php echo e($howItWorksSettings['description'] ?: 'Lorem Ipsum is simply dummy text of the printing indus orem Ipsum has been the industrys standard dummy text ever since.'); ?>
+
                         </p>
                     </div>
 
@@ -742,25 +749,25 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="listing_inner">
-                                    @forelse($howItWorks->take(3) as $step)
+                                    <?php $__empty_1 = true; $__currentLoopData = $howItWorks->take(3); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $step): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <div class="af_block" data-aos="fade-up" data-aos-duration="1500">
                                             <div class="img">
-                                                @if($step->step_image)
-                                                    <img src="{{ asset('storage/' . $step->step_image) }}" alt="{{ $step->step_title }}">
-                                                @else
-                                                    <img src="{{ asset('images/how' . ($step->step_number ?? $loop->index + 1) . '.webp') }}" alt="image">
-                                                @endif
+                                                <?php if($step->step_image): ?>
+                                                    <img src="<?php echo e(asset('storage/' . $step->step_image)); ?>" alt="<?php echo e($step->step_title); ?>">
+                                                <?php else: ?>
+                                                    <img src="<?php echo e(asset('images/how' . ($step->step_number ?? $loop->index + 1) . '.webp')); ?>" alt="image">
+                                                <?php endif; ?>
                                             </div>
                                             <div class="text">
-                                                <h5>{{ $step->step_title }}</h5>
-                                                <p>{{ $step->step_description }}</p>
+                                                <h5><?php echo e($step->step_title); ?></h5>
+                                                <p><?php echo e($step->step_description); ?></p>
                                             </div>
-                                            <div class="process_num">{{ str_pad($step->step_number ?? ($loop->index + 1), 2, '0', STR_PAD_LEFT) }}</div>
+                                            <div class="process_num"><?php echo e(str_pad($step->step_number ?? ($loop->index + 1), 2, '0', STR_PAD_LEFT)); ?></div>
                                         </div>
-                                    @empty
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <!-- Default steps -->
                                         <div class="af_block" data-aos="fade-up" data-aos-duration="1500">
-                                            <div class="img"><img src="{{ asset('images/how1.webp') }}" alt="image"></div>
+                                            <div class="img"><img src="<?php echo e(asset('images/how1.webp')); ?>" alt="image"></div>
                                             <div class="text">
                                                 <h5>Download App & create a free account</h5>
                                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry lorem Ipsum has.</p>
@@ -768,7 +775,7 @@
                                             <div class="process_num">01</div>
                                         </div>
                                         <div class="af_block" data-aos="fade-up" data-aos-duration="1500">
-                                            <div class="img"><img src="{{ asset('images/how2.webp') }}" alt="image"></div>
+                                            <div class="img"><img src="<?php echo e(asset('images/how2.webp')); ?>" alt="image"></div>
                                             <div class="text">
                                                 <h5>Place orders at your preferred eatery</h5>
                                                 <p>Dummy text of the printing and typesetting industry lorem Ipsum has been the industrys.</p>
@@ -776,35 +783,35 @@
                                             <div class="process_num">02</div>
                                         </div>
                                         <div class="af_block" data-aos="fade-up" data-aos-duration="1500">
-                                            <div class="img"><img src="{{ asset('images/how3.webp') }}" alt="image"></div>
+                                            <div class="img"><img src="<?php echo e(asset('images/how3.webp')); ?>" alt="image"></div>
                                             <div class="text">
                                                 <h5>Get it delivered directly to your home, effortlessly</h5>
                                                 <p>Printing and typesetting industry lorem Ipsum has been the industrys standard dummy.</p>
                                             </div>
                                             <div class="process_num">03</div>
                                         </div>
-                                    @endforelse
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="ctr_app_btn_block">
-                                    @if($howItWorksSettings['promotional_text'])
-                                        <p><strong>{{ $howItWorksSettings['promotional_text'] }}</strong></p>
-                                    @endif
+                                    <?php if($howItWorksSettings['promotional_text']): ?>
+                                        <p><strong><?php echo e($howItWorksSettings['promotional_text']); ?></strong></p>
+                                    <?php endif; ?>
                                     <ul class="app_btn">
-                                        @if($howItWorksSettings['show_google_play'])
+                                        <?php if($howItWorksSettings['show_google_play']): ?>
                                         <li>
-                                            <a href="{{ $howItWorksSettings['google_play_url'] ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#') }}">
-                                                <img class="blue_img" src="{{ asset('images/googleplay.webp') }}" alt="image">
+                                            <a href="<?php echo e($howItWorksSettings['google_play_url'] ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#')); ?>">
+                                                <img class="blue_img" src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image">
                                             </a>
                                         </li>
-                                        @endif
-                                        @if($howItWorksSettings['show_app_store'])
+                                        <?php endif; ?>
+                                        <?php if($howItWorksSettings['show_app_store']): ?>
                                         <li>
-                                            <a href="{{ $howItWorksSettings['app_store_url'] ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#') }}">
-                                                <img class="blue_img" src="{{ asset('images/appstorebtn.webp') }}" alt="image">
+                                            <a href="<?php echo e($howItWorksSettings['app_store_url'] ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#')); ?>">
+                                                <img class="blue_img" src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image">
                                             </a>
                                         </li>
-                                        @endif
+                                        <?php endif; ?>
                                     </ul>
                                 </div>
                             </div>
@@ -814,19 +821,19 @@
             </div>
 
             <div class="device">
-                @if($howItWorksSettings['bottom_image'])
-                    <img src="{{ asset('storage/' . $howItWorksSettings['bottom_image']) }}" alt="image">
-                @else
-                    <img src="{{ asset('images/device.webp') }}" alt="image">
-                @endif
+                <?php if($howItWorksSettings['bottom_image']): ?>
+                    <img src="<?php echo e(asset('storage/' . $howItWorksSettings['bottom_image'])); ?>" alt="image">
+                <?php else: ?>
+                    <img src="<?php echo e(asset('images/device.webp')); ?>" alt="image">
+                <?php endif; ?>
             </div>
         </section>
         <!-- How it Works Section End -->
 
         <!-- Success stories Section Start -->
         <section class="key_feature_section row_am" id="review_sec">
-            <div class="kf_side_element left_side"><img src="{{ asset('images/thumbup.webp') }}" alt="image"></div>
-            <div class="kf_side_element right_side"><img src="{{ asset('images/like.webp') }}" alt="image"></div>
+            <div class="kf_side_element left_side"><img src="<?php echo e(asset('images/thumbup.webp')); ?>" alt="image"></div>
+            <div class="kf_side_element right_side"><img src="<?php echo e(asset('images/like.webp')); ?>" alt="image"></div>
 
             <div class="key_innner">
                 <div class="container">
@@ -837,53 +844,54 @@
                     </div>
 
                     <div id="feature_slider" class="owl-carousel owl-theme" data-aos="fade-up" data-aos-duration="1500">
-                        @forelse($testimonials as $testimonial)
+                        <?php $__empty_1 = true; $__currentLoopData = $testimonials; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $testimonial): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <div class="item">
                                 <div class="feature_box">
                                     <div class="img">
-                                        <img src="{{ asset('storage/' . $testimonial->customer_image) }}" alt="{{ $testimonial->customer_name }}">
+                                        <img src="<?php echo e(asset('storage/' . $testimonial->customer_image)); ?>" alt="<?php echo e($testimonial->customer_name); ?>">
                                     </div>
                                     <div class="txt_blk">
-                                        <h6>{{ $testimonial->customer_name }}</h6>
+                                        <h6><?php echo e($testimonial->customer_name); ?></h6>
                                         <div class="rating">
-                                            @for($i = 0; $i < $testimonial->rating; $i++)
+                                            <?php for($i = 0; $i < $testimonial->rating; $i++): ?>
                                                 <span><i class="icofont-star"></i></span>
-                                            @endfor
+                                            <?php endfor; ?>
                                         </div>
                                         <p>
-                                            <span class="story_bold">"{{ $testimonial->quote }}"</span>
-                                            @if($testimonial->full_review)
-                                                {{ Str::limit($testimonial->full_review, 100) }}
-                                            @endif
+                                            <span class="story_bold">"<?php echo e($testimonial->quote); ?>"</span>
+                                            <?php if($testimonial->full_review): ?>
+                                                <?php echo e(Str::limit($testimonial->full_review, 100)); ?>
+
+                                            <?php endif; ?>
                                         </p>
                                     </div>
                                     <div class="quote_img">
-                                        <img src="{{ asset('images/quote.webp') }}" alt="image">
+                                        <img src="<?php echo e(asset('images/quote.webp')); ?>" alt="image">
                                     </div>
                                 </div>
                             </div>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <!-- Default testimonials -->
                             <div class="item">
                                 <div class="feature_box">
                                     <div class="img">
-                                        <img src="{{ asset('images/story1.webp') }}" alt="image">
+                                        <img src="<?php echo e(asset('images/story1.webp')); ?>" alt="image">
                                     </div>
                                     <div class="txt_blk">
                                         <h6>Olivia Sam</h6>
                                         <div class="rating">
-                                            @for($i = 0; $i < 5; $i++)
+                                            <?php for($i = 0; $i < 5; $i++): ?>
                                                 <span><i class="icofont-star"></i></span>
-                                            @endfor
+                                            <?php endfor; ?>
                                         </div>
                                         <p><span class="story_bold">"Delivery on time every order!"</span> Lorem Ipsum is simply dummy text of the printing the industrys standard dummytextever since.</p>
                                     </div>
                                     <div class="quote_img">
-                                        <img src="{{ asset('images/quote.webp') }}" alt="image">
+                                        <img src="<?php echo e(asset('images/quote.webp')); ?>" alt="image">
                                     </div>
                                 </div>
                             </div>
-                        @endforelse
+                        <?php endif; ?>
                     </div>
 
                 </div>
@@ -891,7 +899,7 @@
         </section>
 
         <!-- App-Download-New-Section-Start -->
-        @if($downloadSection)
+        <?php if($downloadSection): ?>
         <section class="row_am download_app_new" id="download_sec">
             <div class="dap_block" data-aos="fade-up" data-aos-duration="1500">
                 <div class="blure_shape bs_1"></div>
@@ -899,62 +907,62 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-12 order-2 order-lg-1">
                         <div class="dap_image left">
-                            @if($downloadSection->left_image)
-                                <img class="dap_desktop_img" src="{{ asset('storage/' . $downloadSection->left_image) }}" alt="image">
-                            @else
-                                <img class="dap_desktop_img" src="{{ asset('images/download_food1.webp') }}" alt="image">
-                            @endif
-                            @if($downloadSection->mobile_image)
-                                <img class="dap_mobile_img" src="{{ asset('storage/' . $downloadSection->mobile_image) }}" alt="image">
-                            @else
-                                <img class="dap_mobile_img" src="{{ asset('images/download_food3.webp') }}" alt="image">
-                            @endif
+                            <?php if($downloadSection->left_image): ?>
+                                <img class="dap_desktop_img" src="<?php echo e(asset('storage/' . $downloadSection->left_image)); ?>" alt="image">
+                            <?php else: ?>
+                                <img class="dap_desktop_img" src="<?php echo e(asset('images/download_food1.webp')); ?>" alt="image">
+                            <?php endif; ?>
+                            <?php if($downloadSection->mobile_image): ?>
+                                <img class="dap_mobile_img" src="<?php echo e(asset('storage/' . $downloadSection->mobile_image)); ?>" alt="image">
+                            <?php else: ?>
+                                <img class="dap_mobile_img" src="<?php echo e(asset('images/download_food3.webp')); ?>" alt="image">
+                            <?php endif; ?>
                         </div>
                     </div>
 
                     <div class="col-lg-6 col-md-12 order-1 order-lg-2">
                         <div class="dap_text">
                             <div class="section_title white_text" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                                @if($downloadSection->badge_text)
-                                    <span class="title_badge">{{ $downloadSection->badge_text }}</span>
-                                @else
+                                <?php if($downloadSection->badge_text): ?>
+                                    <span class="title_badge"><?php echo e($downloadSection->badge_text); ?></span>
+                                <?php else: ?>
                                     <span class="title_badge">Download</span>
-                                @endif
-                                <h2>{{ $downloadSection->heading }}</h2>
-                                <p>{{ $downloadSection->description }}</p>
+                                <?php endif; ?>
+                                <h2><?php echo e($downloadSection->heading); ?></h2>
+                                <p><?php echo e($downloadSection->description); ?></p>
                             </div>
                             <ul class="app_btn" data-aos="fade-up" data-aos-duration="1500">
-                                @if(($downloadSection->show_google_play ?? true))
+                                <?php if(($downloadSection->show_google_play ?? true)): ?>
                                 <li>
-                                    <a href="{{ $downloadSection->google_play_url ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#') }}">
-                                        <img class="blue_img" src="{{ asset('images/googleplay.webp') }}" alt="image">
+                                    <a href="<?php echo e($downloadSection->google_play_url ?? ($hero && $hero->google_play_url ? $hero->google_play_url : '#')); ?>">
+                                        <img class="blue_img" src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image">
                                     </a>
                                 </li>
-                                @endif
-                                @if(($downloadSection->show_app_store ?? true))
+                                <?php endif; ?>
+                                <?php if(($downloadSection->show_app_store ?? true)): ?>
                                 <li>
-                                    <a href="{{ $downloadSection->app_store_url ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#') }}">
-                                        <img class="blue_img" src="{{ asset('images/appstorebtn.webp') }}" alt="image">
+                                    <a href="<?php echo e($downloadSection->app_store_url ?? ($hero && $hero->app_store_url ? $hero->app_store_url : '#')); ?>">
+                                        <img class="blue_img" src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image">
                                     </a>
                                 </li>
-                                @endif
+                                <?php endif; ?>
                             </ul>
                         </div>
                     </div>
 
                     <div class="col-lg-3 col-md-12 order-3 order-lg-3 d-none d-lg-block">
                         <div class="dap_image right">
-                            @if($downloadSection->right_image)
-                                <img src="{{ asset('storage/' . $downloadSection->right_image) }}" alt="image">
-                            @else
-                                <img src="{{ asset('images/download_food2.webp') }}" alt="image">
-                            @endif
+                            <?php if($downloadSection->right_image): ?>
+                                <img src="<?php echo e(asset('storage/' . $downloadSection->right_image)); ?>" alt="image">
+                            <?php else: ?>
+                                <img src="<?php echo e(asset('images/download_food2.webp')); ?>" alt="image">
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        @else
+        <?php else: ?>
         <!-- Default App Download Section -->
         <section class="row_am download_app_new" id="download_sec">
             <div class="dap_block" data-aos="fade-up" data-aos-duration="1500">
@@ -962,8 +970,8 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-12 order-2 order-lg-1">
                         <div class="dap_image left">
-                            <img class="dap_desktop_img" src="{{ asset('images/download_food1.webp') }}" alt="image">
-                            <img class="dap_mobile_img" src="{{ asset('images/download_food3.webp') }}" alt="image">
+                            <img class="dap_desktop_img" src="<?php echo e(asset('images/download_food1.webp')); ?>" alt="image">
+                            <img class="dap_mobile_img" src="<?php echo e(asset('images/download_food3.webp')); ?>" alt="image">
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-12 order-1 order-lg-2">
@@ -975,13 +983,13 @@
                             </div>
                             <ul class="app_btn" data-aos="fade-up" data-aos-duration="1500">
                                 <li>
-                                    <a href="{{ $hero && $hero->google_play_url ? $hero->google_play_url : '#' }}">
-                                        <img class="blue_img" src="{{ asset('images/googleplay.webp') }}" alt="image">
+                                    <a href="<?php echo e($hero && $hero->google_play_url ? $hero->google_play_url : '#'); ?>">
+                                        <img class="blue_img" src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ $hero && $hero->app_store_url ? $hero->app_store_url : '#' }}">
-                                        <img class="blue_img" src="{{ asset('images/appstorebtn.webp') }}" alt="image">
+                                    <a href="<?php echo e($hero && $hero->app_store_url ? $hero->app_store_url : '#'); ?>">
+                                        <img class="blue_img" src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image">
                                     </a>
                                 </li>
                             </ul>
@@ -989,34 +997,34 @@
                     </div>
                     <div class="col-lg-3 col-md-12 order-3 order-lg-3 d-none d-lg-block">
                         <div class="dap_image right">
-                            <img src="{{ asset('images/download_food2.webp') }}" alt="image">
+                            <img src="<?php echo e(asset('images/download_food2.webp')); ?>" alt="image">
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        @endif
+        <?php endif; ?>
         <!-- App-Download-New-Section-end -->
 
         <!-- Register Restaurant Section Start -->
-        @if($registerSection)
-        <section class="row_am register_restaurant" @if($registerSection->background_image) style="background-image: url('{{ asset('storage/' . $registerSection->background_image) }}'); background-size: cover; background-position: center;" @endif>
+        <?php if($registerSection): ?>
+        <section class="row_am register_restaurant" <?php if($registerSection->background_image): ?> style="background-image: url('<?php echo e(asset('storage/' . $registerSection->background_image)); ?>'); background-size: cover; background-position: center;" <?php endif; ?>>
             <div class="reg_block" data-aos="fade-up" data-aos-duration="1500">
                 <div class="row">
                     <div class="col-lg-7 col-md-10 col-sm-12 mx-auto">
                         <div class="dap_text">
                             <div class="section_title white_text" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                                @if($registerSection->badge_text)
-                                    <span class="title_badge">{{ $registerSection->badge_text }}</span>
-                                @else
+                                <?php if($registerSection->badge_text): ?>
+                                    <span class="title_badge"><?php echo e($registerSection->badge_text); ?></span>
+                                <?php else: ?>
                                     <span class="title_badge">register restaurant</span>
-                                @endif
-                                <h2>{{ $registerSection->heading }}</h2>
-                                <p>{{ $registerSection->description }}</p>
+                                <?php endif; ?>
+                                <h2><?php echo e($registerSection->heading); ?></h2>
+                                <p><?php echo e($registerSection->description); ?></p>
                             </div>
                             <div class="ctr_cta">
                                 <div class="btn_block">
-                                    <a href="{{ $registerSection->button_url ?? '#' }}" class="btn puprple_btn ml-0">{{ $registerSection->promo_text ?? 'Register Restaurant' }}</a>
+                                    <a href="<?php echo e($registerSection->button_url ?? '#'); ?>" class="btn puprple_btn ml-0"><?php echo e($registerSection->promo_text ?? 'Register Restaurant'); ?></a>
                                 </div>
                             </div>
                         </div>
@@ -1024,7 +1032,7 @@
                 </div>
             </div>
         </section>
-        @else
+        <?php else: ?>
         <!-- Default Register Restaurant Section -->
         <section class="row_am register_restaurant">
             <div class="reg_block" data-aos="fade-up" data-aos-duration="1500">
@@ -1046,28 +1054,28 @@
                 </div>
             </div>
         </section>
-        @endif
+        <?php endif; ?>
         <!-- Register Restaurant Section end -->
 
         <!-- Deliveryman Section Start -->
-        @if($deliverymanSection)
-        <section class="row_am register_restaurant" @if($deliverymanSection->background_image) style="background-image: url('{{ asset('storage/' . $deliverymanSection->background_image) }}'); background-size: cover; background-position: center;" @endif>
+        <?php if($deliverymanSection): ?>
+        <section class="row_am register_restaurant" <?php if($deliverymanSection->background_image): ?> style="background-image: url('<?php echo e(asset('storage/' . $deliverymanSection->background_image)); ?>'); background-size: cover; background-position: center;" <?php endif; ?>>
             <div class="reg_block" data-aos="fade-up" data-aos-duration="1500">
                 <div class="row">
                     <div class="col-lg-7 col-md-10 col-sm-12 mx-auto">
                         <div class="dap_text">
                             <div class="section_title white_text" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
-                                @if($deliverymanSection->badge_text)
-                                    <span class="title_badge">{{ $deliverymanSection->badge_text }}</span>
-                                @else
+                                <?php if($deliverymanSection->badge_text): ?>
+                                    <span class="title_badge"><?php echo e($deliverymanSection->badge_text); ?></span>
+                                <?php else: ?>
                                     <span class="title_badge">Join as Deliveryman</span>
-                                @endif
-                                <h2>{{ $deliverymanSection->heading }}</h2>
-                                <p>{{ $deliverymanSection->description }}</p>
+                                <?php endif; ?>
+                                <h2><?php echo e($deliverymanSection->heading); ?></h2>
+                                <p><?php echo e($deliverymanSection->description); ?></p>
                             </div>
                             <div class="ctr_cta">
                                 <div class="btn_block">
-                                    <a href="{{ $deliverymanSection->button_url ?? '#' }}" class="btn puprple_btn ml-0">{{ $deliverymanSection->promo_text ?? 'Join As Deliveryman' }}</a>
+                                    <a href="<?php echo e($deliverymanSection->button_url ?? '#'); ?>" class="btn puprple_btn ml-0"><?php echo e($deliverymanSection->promo_text ?? 'Join As Deliveryman'); ?></a>
                                 </div>
                             </div>
                         </div>
@@ -1075,11 +1083,11 @@
                 </div>
             </div>
         </section>
-        @endif
+        <?php endif; ?>
         <!-- Deliveryman Section end -->
 
         <!-- Pre-Footer CTA Section -->
-        @include('partials.pre-footer-cta')
+        <?php echo $__env->make('partials.pre-footer-cta', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
         <!-- Footer-Section start -->
         <footer>
@@ -1092,36 +1100,36 @@
                         <div class="col-lg-5 col-md-6 col-12">
                             <div class="abt_side">
                                 <div class="logo">
-                                    @if($footerLogo)
-                                        <img src="{{ asset('storage/' . $footerLogo) }}" alt="Logo">
-                                    @else
-                                        <img src="{{ asset('images/logo_white.webp') }}" alt="image">
-                                    @endif
+                                    <?php if($footerLogo): ?>
+                                        <img src="<?php echo e(asset('storage/' . $footerLogo)); ?>" alt="Logo">
+                                    <?php else: ?>
+                                        <img src="<?php echo e(asset('images/logo_white.webp')); ?>" alt="image">
+                                    <?php endif; ?>
                                 </div>
-                                <p>{{ $footerDetails }}</p>
-                                @if(isset($footerAppStoreButtons))
+                                <p><?php echo e($footerDetails); ?></p>
+                                <?php if(isset($footerAppStoreButtons)): ?>
                                     <ul class="app_btn">
-                                        @if($footerAppStoreButtons['show_app_store'])
+                                        <?php if($footerAppStoreButtons['show_app_store']): ?>
                                             <li>
-                                                <a href="{{ $footerAppStoreButtons['app_store_url'] }}">
-                                                    <img src="{{ asset('images/appstorebtn.webp') }}" alt="App Store">
+                                                <a href="<?php echo e($footerAppStoreButtons['app_store_url']); ?>">
+                                                    <img src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="App Store">
                                                 </a>
                                             </li>
-                                        @endif
-                                        @if($footerAppStoreButtons['show_google_play'])
+                                        <?php endif; ?>
+                                        <?php if($footerAppStoreButtons['show_google_play']): ?>
                                             <li>
-                                                <a href="{{ $footerAppStoreButtons['google_play_url'] }}">
-                                                    <img src="{{ asset('images/googleplay.webp') }}" alt="Google Play">
+                                                <a href="<?php echo e($footerAppStoreButtons['google_play_url']); ?>">
+                                                    <img src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="Google Play">
                                                 </a>
                                             </li>
-                                        @endif
+                                        <?php endif; ?>
                                     </ul>
-                                @else
+                                <?php else: ?>
                                     <ul class="app_btn">
-                                        <li><a href="#"><img src="{{ asset('images/appstorebtn.webp') }}" alt="image"></a></li>
-                                        <li><a href="#"><img src="{{ asset('images/googleplay.webp') }}" alt="image"></a></li>
+                                        <li><a href="#"><img src="<?php echo e(asset('images/appstorebtn.webp')); ?>" alt="image"></a></li>
+                                        <li><a href="#"><img src="<?php echo e(asset('images/googleplay.webp')); ?>" alt="image"></a></li>
                                     </ul>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -1129,13 +1137,13 @@
                             <div class="links">
                                 <h5>Quick Links</h5>
                                 <ul>
-                                    @forelse($footerQuickLinks as $link)
-                                        <li><a href="{{ $link->url ? $link->url : '#' }}">{{ $link->label }}</a></li>
-                                    @empty
-                                        <li><a href="{{ route('home') }}">Home</a></li>
-                                        <li><a href="{{ route('about') }}">About us</a></li>
-                                        <li><a href="{{ route('contact') }}">Contact us</a></li>
-                                    @endforelse
+                                    <?php $__empty_1 = true; $__currentLoopData = $footerQuickLinks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $link): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <li><a href="<?php echo e($link->url ? $link->url : '#'); ?>"><?php echo e($link->label); ?></a></li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                        <li><a href="<?php echo e(route('home')); ?>">Home</a></li>
+                                        <li><a href="<?php echo e(route('about')); ?>">About us</a></li>
+                                        <li><a href="<?php echo e(route('contact')); ?>">Contact us</a></li>
+                                    <?php endif; ?>
                                 </ul>
                             </div>
                         </div>
@@ -1144,15 +1152,15 @@
                             <div class="links">
                                 <h5>Support</h5>
                                 <ul>
-                                    @forelse($footerSupportMenus as $menu)
-                                        <li><a href="{{ $menu->url ? $menu->url : '#' }}">{{ $menu->label }}</a></li>
-                                    @empty
+                                    <?php $__empty_1 = true; $__currentLoopData = $footerSupportMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <li><a href="<?php echo e($menu->url ? $menu->url : '#'); ?>"><?php echo e($menu->label); ?></a></li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <li><a href="#">FAQs</a></li>
                                         <li><a href="#">Support</a></li>
                                         <li><a href="#">How it works</a></li>
                                         <li><a href="#">Terms & conditions</a></li>
                                         <li><a href="#">Privacy policy</a></li>
-                                    @endforelse
+                                    <?php endif; ?>
                                 </ul>
                             </div>
                         </div>
@@ -1161,8 +1169,8 @@
                             <h5>Subscribe us</h5>
                             <div class="news_letter">
                                 <p>Subscribe our newsleter to receive latest updates regularly from us!</p>
-                                <form id="newsletterForm" action="{{ route('newsletter.subscribe') }}" method="POST">
-                                    @csrf
+                                <form id="newsletterForm" action="<?php echo e(route('newsletter.subscribe')); ?>" method="POST">
+                                    <?php echo csrf_field(); ?>
                                     <div id="newsletter-message" style="display: none; margin-bottom: 10px; padding: 10px; border-radius: 5px; font-size: 14px;"></div>
                                     <div class="form-group">
                                         <input type="email" name="email" id="newsletter_email" class="form-control" placeholder="Enter your email" required>
@@ -1249,24 +1257,24 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-4">
-                                <p>{{ isset($footerCopyrightText) ? str_replace('%Y', date('Y'), $footerCopyrightText) : '© Copyrights ' . date('Y') . '. All rights reserved.' }}</p>
+                                <p><?php echo e(isset($footerCopyrightText) ? str_replace('%Y', date('Y'), $footerCopyrightText) : '© Copyrights ' . date('Y') . '. All rights reserved.'); ?></p>
                             </div>
                             <div class="col-md-4">
                                 <ul class="social_media">
-                                    @if(isset($footerSocialLinks) && $footerSocialLinks->count() > 0)
-                                        @foreach($footerSocialLinks as $socialLink)
+                                    <?php if(isset($footerSocialLinks) && $footerSocialLinks->count() > 0): ?>
+                                        <?php $__currentLoopData = $footerSocialLinks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $socialLink): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <li>
-                                                <a href="{{ $socialLink->url }}" aria-label="{{ $socialLink->label ?? $socialLink->platform . ' page' }}" target="_blank" rel="noopener noreferrer">
-                                                    <i class="{{ $socialLink->icon_class }}"></i>
+                                                <a href="<?php echo e($socialLink->url); ?>" aria-label="<?php echo e($socialLink->label ?? $socialLink->platform . ' page'); ?>" target="_blank" rel="noopener noreferrer">
+                                                    <i class="<?php echo e($socialLink->icon_class); ?>"></i>
                                                 </a>
                                             </li>
-                                        @endforeach
-                                    @else
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
                                         <li><a href="#" aria-label="facebook page"><i class="icofont-facebook"></i></a></li>
                                         <li><a href="#" aria-label="twitter page"><i class="icofont-twitter"></i></a></li>
                                         <li><a href="#" aria-label="instagram page"><i class="icofont-instagram"></i></a></li>
                                         <li><a href="#" aria-label="pinterest page"><i class="icofont-pinterest"></i></a></li>
-                                    @endif
+                                    <?php endif; ?>
                                 </ul>
                             </div>
                             <div class="col-md-4">
@@ -1300,16 +1308,16 @@
     </div>
 
     <!-- Jquery-js-Link -->
-    <script src="{{ asset('js/jquery.js') }}"></script>
-    <script src="{{ asset('js/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/aos.js') }}"></script>
-    <script src="{{ asset('js/typed.min.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="<?php echo e(asset('js/jquery.js')); ?>"></script>
+    <script src="<?php echo e(asset('js/owl.carousel.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('js/bootstrap.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('js/aos.js')); ?>"></script>
+    <script src="<?php echo e(asset('js/typed.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('js/main.js')); ?>"></script>
 
     <script>
         $("#typed").typed({
-            strings: @json($hero && $hero->typed_texts && count($hero->typed_texts) > 0 ? $hero->typed_texts : ["Fastest delivery", "Hygine Food", "5000+ Dishes."]),
+            strings: <?php echo json_encode($hero && $hero->typed_texts && count($hero->typed_texts) > 0 ? $hero->typed_texts : ["Fastest delivery", "Hygine Food", "5000+ Dishes."]) ?>,
             typeSpeed: 100,
             startDelay: 0,
             backSpeed: 60,
@@ -1323,3 +1331,4 @@
 </body>
 </html>
 
+<?php /**PATH /home/skylonit/tastyso/resources/views/frontend/index.blade.php ENDPATH**/ ?>

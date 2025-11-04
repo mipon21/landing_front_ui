@@ -27,17 +27,18 @@
     <div class="login-card">
         <h2 class="text-center mb-4">Admin Login</h2>
         
-        @if($errors->any())
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger">
-                {{ $errors->first() }}
-            </div>
-        @endif
+                <?php echo e($errors->first()); ?>
 
-        <form method="POST" action="{{ route('admin.login.post') }}">
-            @csrf
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="<?php echo e(route('admin.login.post')); ?>">
+            <?php echo csrf_field(); ?>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus>
+                <input type="email" class="form-control" id="email" name="email" value="<?php echo e(old('email')); ?>" required autofocus>
             </div>
 
             <div class="mb-3">
@@ -60,3 +61,4 @@
 </body>
 </html>
 
+<?php /**PATH /home/skylonit/tastyso/resources/views/admin/auth/login.blade.php ENDPATH**/ ?>

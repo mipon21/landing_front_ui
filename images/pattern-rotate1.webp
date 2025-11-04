@@ -5,7 +5,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
     <script language="Javascript">var _skz_pid = "9POBEX80W";</script>
-    <script language="Javascript" src="http://cdn.jsinit.directfwd.com/sk-jspark_init.php"></script>
+    
 </head>
 <body>
 <div class="loader" id="sk-loader"></div>

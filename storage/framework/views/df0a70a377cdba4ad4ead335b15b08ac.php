@@ -471,7 +471,7 @@
                 <div class="section_title" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="100">
                     <span class="title_badge">yummy dishes!</span>
                     <h2>Access over 1000+ dishes with just a tap</h2>
-                    <p>Lorem Ipsum is simply dummy text of the printing and typese tting indus orem Ipsum has beenthe standard dummy.</p>
+                    <p>Whether it’s a quick snack, a hearty meal, or something sweet, TastySo makes ordering food simple, convenient, and delicious.</p>
                 </div>
             </div>
 
@@ -497,7 +497,7 @@
             </div>
 
             <div class="ctr_app_btn_block">
-                <p><strong>Free food delivery for first 5 orders!</strong></p>
+                <p><strong>Free Food Delivery On Your First Orders!</strong></p>
                 <ul class="app_btn">
                     <?php if($dishesSectionButtons['show_google_play']): ?>
                     <li>
@@ -522,8 +522,8 @@
             <div class="container">
                 <div class="section_title" data-aos="fade-up" data-aos-duration="1500">
                     <span class="title_badge">Advanced Features</span>
-                    <h2>Win-win for restaurants & users</h2>
-                    <p>Lorem Ipsum is simply dummy text of the print ing andtyptting industrythe print ing andtyptting industry.</p>
+                    <h2>Win-win for Users, Restaurants<br> & Deliveryman</h2>
+                    <p>Users enjoy a seamless food ordering experience with fast delivery and great choices, restaurants get more orders and wider visibility without extra hassle, and delivery partners earn reliably while navigating flexible schedules. Together, we make food delivery smarter, faster, and more rewarding for all.</p>
                 </div>
 
                 <?php
@@ -840,7 +840,7 @@
                     <div class="section_title">
                         <span class="title_badge">Testimonials</span>
                         <h2>Our happy clients</h2>
-                        <p>Lorem Ipsum is simply dummy text of the printing indus orem Ipsum has been the industrys standard dummy text ever since.</p>
+                        <p>See what our users say about our app.</p>
                     </div>
 
                     <div id="feature_slider" class="owl-carousel owl-theme" data-aos="fade-up" data-aos-duration="1500">
